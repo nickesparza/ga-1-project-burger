@@ -25,6 +25,26 @@ class Player {
     }
 }
 
+// define a "generator" class that sits on the grid and gives the player an ingredient
+class Generator {
+    constructor(x, y, ingredient) {
+        this.x = x,
+        this.y = y,
+        this.width = 50,
+        this.height = 50,
+        this.ingredient = ingredient
+        this.giveIngredient = function () {
+            // if player does not 'have' ingredient, give it to them
+        }
+        this.checkIngredients = function () {
+            // if player has all ingredients, delete ingredients and increment score
+            // if they don't, delete ingredients and display error message
+        }
+    }
+}
+// should also include a function to check if the player already has the ingredient
+// and a function to check if player has all ingredients (only used for delivery tile)
+
 // instantiate a player object
 let player = new Player(0, 0)
 
@@ -54,23 +74,26 @@ const movementHandler = (e) => {
     }
 }
 
+// function to detect edge collision and reset player to in-bounds
 const detectEdge = () => {
     if (player.x < 0) {
         player.x = 0
     } else if (player.y < 0) {
         player.y = 0
     } else if (player.x + player.width > game.width) {
-        player.x = player.x - player.width
+        player.x = game.width - player.width
     } else if (player.y + player.height > game.height) {
-        player.y = player.y - player.height
+        player.y = game.height - player.height
     }
-        // || player.x + player.width > game.width
-        // || player.y + player.height > game.height
 }
 
+// game loop function
 const gameLoop = () => {
+    // first, clear canvas
     ctx.clearRect(0, 0, game.width, game.height)
+    // then, detect if the player is outside the bounds of the canvas and reset them if necessary
     detectEdge()
+    // then, render the player
     player.render()
 }
 
