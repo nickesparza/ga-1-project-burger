@@ -2,12 +2,14 @@ Project Burger
 
 One-sentence pitch: Make as many burgers as you can against the ticking clock and score more and more points as you race to satisfy a series of extremely demanding customers.
 
+Anticipated technologies: HTML, CSS, JavaScript, Canvas, Bootstrap
+
 User Stories
 
 The user should be able to:
 1. Load the game and be presented with a start screen that includes instructions on how to play
 2. Click on the screen or press a button to begin the game
-3. Use WASD or the arrow keys to move up, down, left, or right.
+3. Use WASD or the arrow keys to move a character up, down, left, or right.
 4. See a visual representation of the burger to be made - the ingredients in proper order.
 5. Navigate a maze of obstacles that block different routes.
 6. Interact with various ingredient stations around the arena that apply the specific ingredient to the burger.
@@ -23,3 +25,13 @@ The user should be able to:
     unsuccessful orders
     their point total
 15. Be able to press a button or click the screen to restart the game or return to title.
+
+Feature List
+1. Playable character that can move
+2. Generate random burger combos and push to goal window
+3. Areas with collision that cannot be passed through (maze)
+4. Ingredient tiles that add an ingredient to the player's burger
+5. Pass/fail check upon delivering to service window
+6. Point allocation with multiplier based on number of ingredients past 2 or 3
+7. Timer that ends the game when it reaches 0
+8. Menu functionality for starting/restarting the game and displaying results
