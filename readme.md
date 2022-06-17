@@ -42,6 +42,7 @@ The user should be able to:
     - successful orders
     - unsuccessful orders
     - their point total
+
 ![image](pitch-resources/project-burger-wireframe05.jpg)
 
 15. Be able to press a button or click the screen to restart the game or return to title.
