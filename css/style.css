@@ -1,0 +1,50 @@
+body {
+    background-color: gray;
+    display: flex;
+    justify-content: center;
+}
+
+div, aside, main {
+    border: 2px solid pink;
+}
+
+canvas {
+    background-color: black;
+    width: 800px;
+    height: 600px;
+}
+
+main {
+    width: fit-content;
+    height: fit-content;
+}
+
+.ui {
+    margin: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#objective {
+    flex-grow: 2;
+}
+
+#score, #timer {
+    flex-grow: 1;
+}
+
+#container {
+    display: flex;
+    justify-content: space-evenly;
+    width: fit-content;
+    height: fit-content;
+}
+
+#interface {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    width: 200px;
+}
+
