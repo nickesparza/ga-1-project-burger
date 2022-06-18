@@ -8,6 +8,10 @@ div, aside, main {
     border: 2px solid pink;
 }
 
+h2 {
+    margin: 0;
+}
+
 canvas {
     background-color: black;
     width: 800px;
