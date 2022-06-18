@@ -33,11 +33,8 @@ class Wall {
         this.y = y,
         this.width = 50,
         this.height = 50,
-        this.blockPlayer = function () {
-
-        }
         this.render = function () {
-            ctx.fillStyle = 'rgb(255, 133, 230, .5)'
+            ctx.fillStyle = 'gray'
             ctx.fillRect(this.x, this.y, this.width, this.height)
         }
     }
