@@ -8,9 +8,6 @@ const ctx = game.getContext('2d')
 game.setAttribute('width', getComputedStyle(game)['width'])
 game.setAttribute('height', getComputedStyle(game)['height'])
 
-console.log(`game width ${game.width}`)
-console.log(`game height ${game.height}`)
-
 // define player class
 class Player {
     constructor(x, y) {
@@ -24,6 +21,23 @@ class Player {
         this.scoreable = false,
         this.render = function () {
             ctx.fillStyle = 'green'
+            ctx.fillRect(this.x, this.y, this.width, this.height)
+        }
+    }
+}
+
+// define class for generic wall object that player cannot move through
+class Wall {
+    constructor() {
+        this.x = x,
+        this.y = y,
+        this.width = 50,
+        this.height = 50,
+        this.blockPlayer = function () {
+
+        }
+        this.render = function () {
+            ctx.fillStyle = 'rgb(255, 133, 230, .5)'
             ctx.fillRect(this.x, this.y, this.width, this.height)
         }
     }
@@ -56,6 +70,7 @@ class Scorer {
         }
     }
 }
+
 // define a "generator" class that sits on the grid and gives the player an ingredient
 class Generator {
     constructor(x, y, ingredient) {
@@ -138,6 +153,19 @@ const movementHandler = (e) => {
     }
 }
 
+// function to draw map
+const drawLevel = () => {
+    const wallHeight = 50
+    const wallWidth = 50
+    for (let i = 0; i <= 800; i += 50) {
+        ctx.fillStyle = 'gray'
+        ctx.fillRect(i, 0, wallWidth, wallHeight)
+        ctx.fillRect(i, 550, wallWidth, wallHeight)
+        ctx.fillRect(0, i, wallWidth, wallHeight)
+        ctx.fillRect(750, i, wallWidth, wallHeight)
+    }
+}
+
 // function to detect edge collision and reset player to in-bounds
 const detectEdge = () => {
     if (player.x < 0) {
@@ -157,21 +185,23 @@ const gameLoop = () => {
     ctx.clearRect(0, 0, game.width, game.height)
     // then, detect if the player is outside the bounds of the canvas and reset them if necessary
     detectEdge()
-    // set up handler for ingredients
+    drawLevel()
+    // set up handler for interactables
     interactables.forEach(interactables => {
         collisionChecker(interactables)
     })
-    // render interactables
-    ingArray.forEach(interactables => {
+    // // render interactables
+    interactables.forEach(interactables => {
         interactables.render()
     })
-    scorer.render()
+    // scorer.render()
     // then, render the player
     player.render()
 }
 
 // add event listener for key presses
 document.addEventListener('DOMContentLoaded', function () {
+    console.log(`DOM content loaded`)
     document.addEventListener('keydown', movementHandler)
     setInterval(gameLoop, 60)
 })
