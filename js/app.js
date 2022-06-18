@@ -11,14 +11,16 @@ game.setAttribute('height', getComputedStyle(game)['height'])
 console.log(`game width ${game.width}`)
 console.log(`game height ${game.height}`)
 
-// define character class
+// define player class
 class Player {
     constructor(x, y) {
         this.x = x,
         this.y = y,
         this.width = 50,
         this.height = 50,
+        // empty starting array to fill with ingredients
         this.ingredients = [],
+        // variable which becomes true when all ingredients have been added to ingredients array
         this.scoreable = false,
         this.render = function () {
             ctx.fillStyle = 'green'
@@ -42,6 +44,9 @@ class Scorer {
                 player.ingredients.length = 0
                 console.log(`Players ingredient list is now ${player.ingredients}`)
                 console.log(`You scored a point`)
+            } else if (player.ingredients.length > 0 && player.ingredients.length < ingArray.length) {
+                player.ingredients.length = 0
+                console.log(`You screwed up! Not all ingredients were added`)
             }
             // if they don't, delete ingredients and display error message
         },
@@ -68,7 +73,8 @@ class Generator {
                 console.log(`Player has obtained ${this.ingredient}`)
                 console.log(player.ingredients)
             }
-            if (player.ingredients.length === ingArray.length) {
+            // check for all ingredients and make player scoreable
+            if (player.ingredients.length === ingArray.length && player.scoreable === false) {
                 player.scoreable = true
                 console.log(`player can now score a point`)
             }
