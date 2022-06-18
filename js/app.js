@@ -18,6 +18,8 @@ class Player {
         this.y = y,
         this.width = 50,
         this.height = 50,
+        this.ingredients = [],
+        this.scoreable = false,
         this.render = function () {
             ctx.fillStyle = 'green'
             ctx.fillRect(this.x, this.y, this.width, this.height)
@@ -25,6 +27,30 @@ class Player {
     }
 }
 
+// define "scorer" class that checks if the player has all ingredients and increments score
+class Scorer {
+    constructor(x, y) {
+        this.x = x,
+        this.y = y,
+        this.width = 50,
+        this.height = 50,
+        // function to check ingredients
+        this.checkIngredients = function () {
+            // if player has all ingredients, delete ingredients and increment score
+            if (player.scoreable === true) {
+                player.scoreable = false
+                player.ingredients.length = 0
+                console.log(`Players ingredient list is now ${player.ingredients}`)
+                console.log(`You scored a point`)
+            }
+            // if they don't, delete ingredients and display error message
+        },
+        this.render = function () {
+            ctx.fillStyle = 'rgb(255, 133, 230, .5)'
+            ctx.fillRect(this.x, this.y, this.width, this.height)
+        }
+    }
+}
 // define a "generator" class that sits on the grid and gives the player an ingredient
 class Generator {
     constructor(x, y, ingredient) {
@@ -32,21 +58,53 @@ class Generator {
         this.y = y,
         this.width = 50,
         this.height = 50,
-        this.ingredient = ingredient
+        // attribute that determines what ingredient the generator gives
+        this.ingredient = ingredient,
+        // function to give ingredients
         this.giveIngredient = function () {
             // if player does not 'have' ingredient, give it to them
-        }
-        this.checkIngredients = function () {
-            // if player has all ingredients, delete ingredients and increment score
-            // if they don't, delete ingredients and display error message
+            if (!player.ingredients.includes(this.ingredient)) {
+                player.ingredients.push(this.ingredient)
+                console.log(`Player has obtained ${this.ingredient}`)
+                console.log(player.ingredients)
+            }
+            if (player.ingredients.length === ingArray.length) {
+                player.scoreable = true
+                console.log(`player can now score a point`)
+            }
+        },
+        // function to render generator on screen
+        this.render = function () {
+            ctx.fillStyle = 'rgb(44, 133, 230, .5)'
+            ctx.fillRect(this.x, this.y, this.width, this.height)
         }
     }
 }
-// should also include a function to check if the player already has the ingredient
-// and a function to check if player has all ingredients (only used for delivery tile)
 
 // instantiate a player object
-let player = new Player(0, 0)
+let player = new Player(50, 50)
+
+// instantiate a generator object
+let tomato = new Generator(400, 300, 'tomato')
+let cheese = new Generator(600, 100, 'cheese')
+let lettuce = new Generator(200, 500, 'lettuce')
+let mustard = new Generator(750, 300, 'mustard')
+let patty = new Generator(450, 450, 'patty')
+let scorer = new Scorer(0, 0)
+
+const ingArray = [tomato, cheese, lettuce, mustard, patty]
+const interactables = [tomato, cheese, lettuce, mustard, patty, scorer]
+
+// checker function for giving player an ingredient
+const collisionChecker = (interactable) => {
+    if (player.x === interactable.x && player.y === interactable.y) {
+        if (interactable instanceof Generator) {
+            interactable.giveIngredient()
+        } else {
+            interactable.checkIngredients()
+        }
+    }
+}
 
 // handler for moving with the keyboard
 const movementHandler = (e) => {
@@ -93,11 +151,20 @@ const gameLoop = () => {
     ctx.clearRect(0, 0, game.width, game.height)
     // then, detect if the player is outside the bounds of the canvas and reset them if necessary
     detectEdge()
+    // set up handler for ingredients
+    interactables.forEach(interactables => {
+        collisionChecker(interactables)
+    })
+    // render interactables
+    ingArray.forEach(interactables => {
+        interactables.render()
+    })
+    scorer.render()
     // then, render the player
     player.render()
 }
 
-// add event listener for W keypress
+// add event listener for key presses
 document.addEventListener('DOMContentLoaded', function () {
     document.addEventListener('keydown', movementHandler)
     setInterval(gameLoop, 60)
