@@ -153,6 +153,8 @@ const gameStateManager = () => {
                 this.render = function () {
                     ctx.fillStyle = 'rgb(44, 133, 230, .5)'
                     ctx.fillRect(this.x, this.y, this.width, this.height)
+                    ctx.fillStyle = this.color
+                    ctx.fillRect(this.x + 15, this.y + 25, 20, 5)
                 }
             }
         }
