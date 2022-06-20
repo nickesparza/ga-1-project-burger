@@ -63,19 +63,25 @@ const gameStateManager = () => {
                 }
                 // function to draw burger ingredients in order of acquisition
                 this.drawBurger = function (array) {
+                    // set variable for where within player graphicto begin stack
                     let stackPosition = 35
+                    // set bottom bun color and draw
                     ctx.fillStyle = 'brown'
                     ctx.fillRect(this.x + 15, this.y + 40, 20, 5)
+                    // iterate through ingredients array to grab attributes
                     array.forEach(ingredient => {
+                        // if this is the first ingredient, draw it at origin
                         if (array[0] === ingredient) {
                             ctx.fillStyle = ingredient.color
                             ctx.fillRect(this.x + 15, this.y + stackPosition, 20, 5)
                             stackPosition -= 5
                         } else {
+                        // I may not need this, will test later
                             ctx.fillStyle = ingredient.color
                             ctx.fillRect(this.x + 15, this.y + stackPosition, 20, 5)
                             stackPosition -= 5
                         }
+                    // draw top bun that stays on top of burger stack
                     ctx.fillStyle = 'brown'
                     ctx.fillRect(this.x + 15, this.y + stackPosition, 20, 5)
                     })
@@ -112,12 +118,12 @@ const gameStateManager = () => {
                         player.ingredients.length = 0
                         console.log(`Players ingredient list is now ${player.ingredients}`)
                         console.log(`You scored a point`)
+                    // if they don't, delete ingredients and display error message
                     } else if (player.ingredients.length > 0 && player.ingredients.length < ingArray.length) {
                         player.ingredients.length = 0
                         failedOrders += 1
                         console.log(`You screwed up! Not all ingredients were added`)
                     }
-                    // if they don't, delete ingredients and display error message
                 },
                 this.render = function () {
                     ctx.fillStyle = 'rgb(255, 133, 230, .5)'
@@ -233,9 +239,9 @@ const gameStateManager = () => {
             interactables.forEach(interactables => {
                 interactables.render()
             })
-            // scorer.render()
             // then, render the player
             player.render()
+            // render the current burger stack on top of the player
             player.drawBurger(player.ingredients)
         }, 60)
         // listener for key presses
