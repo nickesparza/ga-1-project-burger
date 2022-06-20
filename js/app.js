@@ -182,7 +182,6 @@ const gameLoop = () => {
     ctx.clearRect(0, 0, game.width, game.height)
     // then, detect if the player is outside the bounds of the canvas and reset them if necessary
     detectEdge()
-    drawLevel()
     // set up handler for interactables
     interactables.forEach(interactables => {
         collisionChecker(interactables)
