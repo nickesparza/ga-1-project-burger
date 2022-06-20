@@ -64,16 +64,20 @@ const gameStateManager = () => {
                 // function to draw burger ingredients in order of acquisition
                 this.drawBurger = function (array) {
                     let stackPosition = 35
+                    ctx.fillStyle = 'brown'
+                    ctx.fillRect(this.x + 15, this.y + 40, 20, 5)
                     array.forEach(ingredient => {
                         if (array[0] === ingredient) {
-                            ctx.fillStyle = 'blue'
+                            ctx.fillStyle = ingredient.color
                             ctx.fillRect(this.x + 15, this.y + stackPosition, 20, 5)
                             stackPosition -= 5
                         } else {
-                            ctx.fillStyle = 'orange'
+                            ctx.fillStyle = ingredient.color
                             ctx.fillRect(this.x + 15, this.y + stackPosition, 20, 5)
                             stackPosition -= 5
                         }
+                    ctx.fillStyle = 'brown'
+                    ctx.fillRect(this.x + 15, this.y + stackPosition, 20, 5)
                     })
                 }
             }
@@ -134,8 +138,8 @@ const gameStateManager = () => {
                 // function to give ingredients
                 this.giveIngredient = function () {
                     // if player does not 'have' ingredient, give it to them
-                    if (!player.ingredients.includes(this.ingredient)) {
-                        player.ingredients.push(this.ingredient)
+                    if (!player.ingredients.includes(this)) {
+                        player.ingredients.push(this)
                         console.log(`Player has obtained ${this.ingredient}`)
                         console.log(player.ingredients)
                     }
