@@ -280,7 +280,46 @@ const gameStateManager = () => {
         let scorer = new Scorer(0, 0)
 
         let testWall = new Wall(150, 150, 50, 50)
+        const mapArray = [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2,
+                          1,0,0,0,0,0,0,1,1,0,0,0,0,0,0,2,
+                          1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,
+                          1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,
+                          1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,
+                          1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,
+                          1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,
+                          1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,
+                          1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,
+                          1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,
+                          1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,
+                          1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]
         
+        const wallObj = []
+        console.log(wallObj)
+        // function for drawing the map
+        const drawMap = () => {
+            let mapX = 0
+            let mapY = 0
+            let counter = 0
+            mapArray.forEach(square => {
+                if (square === 1) {
+                    wallObj.push(new Wall(mapX, mapY, 50, 50))
+                    counter++
+                    mapX += 50
+                    console.log(mapX)
+                } else if (square === 2) {
+                    wallObj.push(new Wall(mapX, mapY, 50, 50))
+                    counter++
+                    mapY += 50
+                    mapX = 0
+                    console.log(mapX)
+                } else {
+                    mapX += 50
+                    console.log(mapX)
+                }
+                // console.log(counter)
+            })
+        }
+        drawMap()
         // arrays for checking ingredients and interactables
         const ingArray = [tomato, cheese, lettuce, mustard, patty]
         const interactables = [tomato, cheese, lettuce, mustard, patty, scorer]
@@ -289,8 +328,12 @@ const gameStateManager = () => {
         const playID = setInterval(() => {
             // render and collision and scoring functions that push information to DOM elements
             ctx.clearRect(0, 0, canvas.width, canvas.height)
-                // then, detect if the player is outside the bounds of the canvas and reset them if necessary
+            // then, detect if the player is outside the bounds of the canvas and reset them if necessary
             detectEdge()
+            // then, draw the map
+            wallObj.forEach(wall => {
+                wall.render()
+            })
             // set up handler for interactables
             interactables.forEach(interactables => {
                 collisionChecker(interactables)
@@ -302,7 +345,7 @@ const gameStateManager = () => {
             })
             // then, render the player
             player.render()
-            // render the current burger stack on top of the player
+            // finally, render the current burger stack on top of the player
             player.drawBurger(player.ingredients)
         }, 60)
         // listener for key presses
