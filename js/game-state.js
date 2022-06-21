@@ -73,6 +73,8 @@ const gameStateManager = () => {
             constructor(x, y) {
                 this.x = x,
                 this.y = y,
+                this.lastX = null,
+                this.lastY = null,
                 this.width = 50,
                 this.height = 50,
                 // empty starting array to fill with ingredients
@@ -112,11 +114,11 @@ const gameStateManager = () => {
         }
         // define class for generic wall object that player cannot move through
         class Wall {
-            constructor() {
+            constructor(x, y, width, height) {
                 this.x = x,
                 this.y = y,
-                this.width = 50,
-                this.height = 50,
+                this.width = width,
+                this.height = height,
                 this.render = function () {
                     ctx.fillStyle = 'gray'
                     ctx.fillRect(this.x, this.y, this.width, this.height)
@@ -187,20 +189,6 @@ const gameStateManager = () => {
                 }
             }
         }
-        // instantiate a player object
-        let player = new Player(50, 50)
-
-        // instantiate a generator object
-        let tomato = new Generator(400, 300, 'tomato', 'red')
-        let cheese = new Generator(600, 100, 'cheese', '#fcba03')
-        let lettuce = new Generator(200, 500, 'lettuce', '#18db18')
-        let mustard = new Generator(750, 300, 'mustard', '#e8f00e')
-        let patty = new Generator(450, 450, 'patty', '#633313')
-        let scorer = new Scorer(0, 0)
-
-        const ingArray = [tomato, cheese, lettuce, mustard, patty]
-        const interactables = [tomato, cheese, lettuce, mustard, patty, scorer]
-
         // checker function for giving player an ingredient
         const collisionChecker = (interactable) => {
             if (player.x === interactable.x && player.y === interactable.y) {
@@ -217,22 +205,34 @@ const gameStateManager = () => {
                 case (87): // W
                 case (38): // up arrow
                     // this moves the player up
+                    player.lastY = player.y
                     player.y -= 50
+                    console.log(`player's last Y position: ${player.lastY}`)
+                    console.log(`player's current Y position: ${player.y}`)
                     break
                 case (65): // A
                 case (37): // left arrow
                     // this moves the player left
+                    player.lastX = player.x
                     player.x -= 50
+                    console.log(`player's last X position: ${player.lastX}`)
+                    console.log(`player's current X position: ${player.x}`)
                     break
                 case (83): // S
                 case (40): // down arrow
                     // this moves the player down
+                    player.lastY = player.y
                     player.y += 50
+                    console.log(`player's last Y position: ${player.lastY}`)
+                    console.log(`player's current Y position: ${player.y}`)
                     break
                 case (68): // D
                 case (39): // right arrow
                     // this moves the player right
+                    player.lastX = player.x
                     player.x += 50
+                    console.log(`player's last X position: ${player.lastX}`)
+                    console.log(`player's current X position: ${player.x}`)
                     break
             }
         }
@@ -248,6 +248,21 @@ const gameStateManager = () => {
                 player.y = canvas.height - player.height
             }
         }
+        // instantiate a player object
+        let player = new Player(50, 50)
+
+        // instantiate a generator object
+        let tomato = new Generator(400, 300, 'tomato', 'red')
+        let cheese = new Generator(600, 100, 'cheese', '#fcba03')
+        let lettuce = new Generator(200, 500, 'lettuce', '#18db18')
+        let mustard = new Generator(750, 300, 'mustard', '#e8f00e')
+        let patty = new Generator(450, 450, 'patty', '#633313')
+        let scorer = new Scorer(0, 0)
+        
+        // arrays for checking ingredients and interactables
+        const ingArray = [tomato, cheese, lettuce, mustard, patty]
+        const interactables = [tomato, cheese, lettuce, mustard, patty, scorer]
+
         // setInterval for anonymous play manager function that is saved to a variable and starts immediately
         const playID = setInterval(() => {
             // render and collision and scoring functions that push information to DOM elements
