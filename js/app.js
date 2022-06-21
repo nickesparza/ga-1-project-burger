@@ -8,6 +8,14 @@ const ctx = game.getContext('2d')
 game.setAttribute('width', getComputedStyle(game)['width'])
 game.setAttribute('height', getComputedStyle(game)['height'])
 
+// console.log(`game width ${game.width}`)
+// console.log(`game height ${game.height}`)
+
+// define score variable and push to browser
+let score = 0
+const scoreUI = document.getElementById('score')
+score.innerHTML = `${score}`
+
 // define player class
 class Player {
     constructor(x, y) {
@@ -53,7 +61,8 @@ class Scorer {
             if (player.scoreable === true) {
                 player.scoreable = false
                 player.ingredients.length = 0
-                console.log(`Players ingredient list is now ${player.ingredients}`)
+                score++
+                scoreUI.innerHTML = `<h2>${score}</h2>`
                 console.log(`You scored a point`)
             } else if (player.ingredients.length > 0 && player.ingredients.length < ingArray.length) {
                 player.ingredients.length = 0
@@ -176,6 +185,21 @@ const detectEdge = () => {
     }
 }
 
+// function to start timer and countdown in the browser
+const countDown = (time) => {
+    const timerUI = document.getElementById('timer')
+    timerUI.innerHTML = `<h2>${time}</h2>`
+    const interval = setInterval(() => {
+        time -= 1
+        timerUI.innerHTML = `<h2>${time}</h2>`
+    }, 1000)
+    setTimeout(() => {
+        clearInterval(interval)
+        console.log(`time's up`)
+        return time
+    }, time * 1000)
+}
+
 // game loop function
 const gameLoop = () => {
     // first, clear canvas
@@ -195,9 +219,17 @@ const gameLoop = () => {
     player.render()
 }
 
-// add event listener for key presses
+// add event listener for key press to start the game, then remove listener
+document.addEventListener('keydown', function (e) {
+    if (e.keyCode === 87) {
+        document.addEventListener('keydown', movementHandler)
+        const objectiveUI = document.getElementById('objective')
+        objectiveUI.innerHTML = `${ingArray[0].ingredient}`
+        setInterval(gameLoop, 60)
+        countDown(30)
+    }
+}, {once: true})
+
 document.addEventListener('DOMContentLoaded', function () {
-    console.log(`DOM content loaded`)
-    document.addEventListener('keydown', movementHandler)
-    setInterval(gameLoop, 60)
+    console.log(`press W to begin`)
 })
