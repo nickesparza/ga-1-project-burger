@@ -19,7 +19,7 @@ const gameStateManager = () => {
     const scoreUI = document.getElementById('score')
     scoreUI.innerHTML = `${score}`
     // timer
-    let timer = 20
+    let timer = 120
     const timerUI = document.getElementById('timer')
     timerUI.innerHTML = `${timer}`
     const countDown = (timer) => {
@@ -30,12 +30,12 @@ const gameStateManager = () => {
         }, 1000)
         setTimeout(() => {
             clearInterval(timerID)
-            console.log(`time's up`)
+            // console.log(`time's up`)
             return timer
         }, timer * 1000)
     }
     const resetUI = () => {
-        timer = 20
+        timer = 120
         timerUI.innerHTML = `${timer}`
         score = 0
         scoreUI.innerHTML = `${score}`
@@ -141,7 +141,7 @@ const gameStateManager = () => {
                         successOrders += 1
                         player.ingredients.length = 0
                         scoreUI.innerHTML = `${score}`
-                        console.log(`Players ingredient list is now ${player.ingredients}`)
+                        // console.log(`Players ingredient list is now ${player.ingredients}`)
                         console.log(`You scored a point`)
                     // if they don't, delete ingredients and display error message
                     } else if (player.ingredients.length > 0 && player.ingredients.length < ingArray.length) {
@@ -171,13 +171,13 @@ const gameStateManager = () => {
                     // if player does not 'have' ingredient, give it to them
                     if (!player.ingredients.includes(this)) {
                         player.ingredients.push(this)
-                        console.log(`Player has obtained ${this.ingredient}`)
-                        console.log(player.ingredients)
+                        // console.log(`Player has obtained ${this.ingredient}`)
+                        // console.log(player.ingredients)
                     }
                     // check for all ingredients and make player scoreable
                     if (player.ingredients.length === ingArray.length && player.scoreable === false) {
                         player.scoreable = true
-                        console.log(`player can now score a point`)
+                        // console.log(`player can now score a point`)
                     }
                 },
                 // function to render generator on screen
@@ -198,6 +198,18 @@ const gameStateManager = () => {
                     interactable.checkIngredients()
                 }
             }
+            if (player.x === testWall.x && player.y === testWall.y) {
+                // console.log(`a collision has occurred`)
+                // console.log(`player's last X position: ${player.lastX}`)
+                // console.log(`player's last Y position: ${player.lastY}`)
+                player.y = player.lastY
+                player.x = player.lastX
+                // console.log(`player's current X position: ${player.x}`)
+                // console.log(`player's current Y position: ${player.y}`)
+                // console.log(`player's last X position: ${player.lastX}`)
+                // console.log(`player's last Y position: ${player.lastY}`)
+                // console.log(`end collision report`)
+            }
         }
         // handler for moving with the keyboard
         const movementHandler = (e) => {
@@ -206,33 +218,41 @@ const gameStateManager = () => {
                 case (38): // up arrow
                     // this moves the player up
                     player.lastY = player.y
+                    player.lastX = player.x
                     player.y -= 50
-                    console.log(`player's last Y position: ${player.lastY}`)
-                    console.log(`player's current Y position: ${player.y}`)
+                    // console.log(`player's last Y position: ${player.lastY}`)
+                    // console.log(`player's current Y position: ${player.y}`)
+                    // console.log(`player's current X position: ${player.x}`)
                     break
                 case (65): // A
                 case (37): // left arrow
                     // this moves the player left
                     player.lastX = player.x
+                    player.lastY = player.y
                     player.x -= 50
-                    console.log(`player's last X position: ${player.lastX}`)
-                    console.log(`player's current X position: ${player.x}`)
+                    // console.log(`player's last X position: ${player.lastX}`)
+                    // console.log(`player's current X position: ${player.x}`)
+                    // console.log(`player's current Y position: ${player.y}`)
                     break
                 case (83): // S
                 case (40): // down arrow
                     // this moves the player down
                     player.lastY = player.y
+                    player.lastX = player.x
                     player.y += 50
-                    console.log(`player's last Y position: ${player.lastY}`)
-                    console.log(`player's current Y position: ${player.y}`)
+                    // console.log(`player's last Y position: ${player.lastY}`)
+                    // console.log(`player's current Y position: ${player.y}`)
+                    // console.log(`player's current X position: ${player.x}`)
                     break
                 case (68): // D
                 case (39): // right arrow
                     // this moves the player right
                     player.lastX = player.x
+                    player.lastY = player.y
                     player.x += 50
-                    console.log(`player's last X position: ${player.lastX}`)
-                    console.log(`player's current X position: ${player.x}`)
+                    // console.log(`player's last X position: ${player.lastX}`)
+                    // console.log(`player's current X position: ${player.x}`)
+                    // console.log(`player's current Y position: ${player.y}`)
                     break
             }
         }
@@ -258,6 +278,8 @@ const gameStateManager = () => {
         let mustard = new Generator(750, 300, 'mustard', '#e8f00e')
         let patty = new Generator(450, 450, 'patty', '#633313')
         let scorer = new Scorer(0, 0)
+
+        let testWall = new Wall(150, 150, 50, 50)
         
         // arrays for checking ingredients and interactables
         const ingArray = [tomato, cheese, lettuce, mustard, patty]
@@ -273,6 +295,7 @@ const gameStateManager = () => {
             interactables.forEach(interactables => {
                 collisionChecker(interactables)
             })
+            testWall.render()
             // // render interactables
             interactables.forEach(interactables => {
                 interactables.render()
