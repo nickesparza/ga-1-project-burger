@@ -16,8 +16,30 @@ const gameStateManager = () => {
     ctx.font = '32px Helvetica'
     // score
     let score = 0
+    const scoreUI = document.getElementById('score')
+    scoreUI.innerHTML = `${score}`
     // timer
-    let timer = 10
+    let timer = 20
+    const timerUI = document.getElementById('timer')
+    timerUI.innerHTML = `${timer}`
+    const countDown = (timer) => {
+        timerUI.innerHTML = `${timer}`
+        const timerID = setInterval(() => {
+            timer -= 1
+            timerUI.innerHTML = `${timer}`
+        }, 1000)
+        setTimeout(() => {
+            clearInterval(timerID)
+            console.log(`time's up`)
+            return timer
+        }, timer * 1000)
+    }
+    const resetUI = () => {
+        timer = 20
+        timerUI.innerHTML = `${timer}`
+        score = 0
+        scoreUI.innerHTML = `${score}`
+    }
     // successful orders
     let successOrders = 0
     // failed orders
@@ -116,6 +138,7 @@ const gameStateManager = () => {
                         score += 10
                         successOrders += 1
                         player.ingredients.length = 0
+                        scoreUI.innerHTML = `${score}`
                         console.log(`Players ingredient list is now ${player.ingredients}`)
                         console.log(`You scored a point`)
                     // if they don't, delete ingredients and display error message
@@ -247,6 +270,7 @@ const gameStateManager = () => {
         // listener for key presses
         document.addEventListener('keydown', movementHandler)
         // includes function to clear interval on play when timer hits zero and start resultsManager
+        countDown(timer)
         setTimeout(() => {
             clearInterval(playID)
             console.log(`playManager interval cleared`)
@@ -275,6 +299,7 @@ const gameStateManager = () => {
         document.addEventListener('keydown', function () {
             clearInterval(resultsID)
             console.log(`resultsManager interval cleared`)
+            resetUI()
             titleManager()
         }, {once: true})
     }
