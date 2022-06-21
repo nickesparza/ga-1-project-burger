@@ -123,6 +123,20 @@ const gameStateManager = () => {
                     ctx.fillStyle = 'gray'
                     ctx.fillRect(this.x, this.y, this.width, this.height)
                 }
+                this.blockPlayer = function () {
+                    if (player.x === this.x && player.y === this.y) {
+                        // console.log(`a collision has occurred`)
+                        // console.log(`player's last X position: ${player.lastX}`)
+                        // console.log(`player's last Y position: ${player.lastY}`)
+                        player.y = player.lastY
+                        player.x = player.lastX
+                        // console.log(`player's current X position: ${player.x}`)
+                        // console.log(`player's current Y position: ${player.y}`)
+                        // console.log(`player's last X position: ${player.lastX}`)
+                        // console.log(`player's last Y position: ${player.lastY}`)
+                        // console.log(`end collision report`)
+                    }
+                }
             }
         }
         // define "scorer" class that checks if the player has all ingredients and increments score
@@ -198,18 +212,6 @@ const gameStateManager = () => {
                     interactable.checkIngredients()
                 }
             }
-            if (player.x === testWall.x && player.y === testWall.y) {
-                // console.log(`a collision has occurred`)
-                // console.log(`player's last X position: ${player.lastX}`)
-                // console.log(`player's last Y position: ${player.lastY}`)
-                player.y = player.lastY
-                player.x = player.lastX
-                // console.log(`player's current X position: ${player.x}`)
-                // console.log(`player's current Y position: ${player.y}`)
-                // console.log(`player's last X position: ${player.lastX}`)
-                // console.log(`player's last Y position: ${player.lastY}`)
-                // console.log(`end collision report`)
-            }
         }
         // handler for moving with the keyboard
         const movementHandler = (e) => {
@@ -273,28 +275,26 @@ const gameStateManager = () => {
 
         // instantiate a generator object
         let tomato = new Generator(400, 300, 'tomato', 'red')
-        let cheese = new Generator(600, 100, 'cheese', '#fcba03')
-        let lettuce = new Generator(200, 500, 'lettuce', '#18db18')
-        let mustard = new Generator(750, 300, 'mustard', '#e8f00e')
-        let patty = new Generator(450, 450, 'patty', '#633313')
-        let scorer = new Scorer(0, 0)
+        let cheese = new Generator(250, 200, 'cheese', '#fcba03')
+        let lettuce = new Generator(50, 450, 'lettuce', '#18db18')
+        let mustard = new Generator(700, 300, 'mustard', '#e8f00e')
+        let patty = new Generator(500, 500, 'patty', '#633313')
+        let scorer = new Scorer(100, 0)
 
-        let testWall = new Wall(150, 150, 50, 50)
-        const mapArray = [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2,
-                          1,0,0,0,0,0,0,1,1,0,0,0,0,0,0,2,
-                          1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,
-                          1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,
-                          1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,
-                          1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,
-                          1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,
-                          1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,
-                          1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,
-                          1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,
-                          1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,
+        const mapArray = [1,1,0,1,1,1,1,1,1,1,1,1,1,1,1,2,
+                          1,0,0,0,0,0,1,1,1,0,0,0,0,0,0,2,
+                          1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,2,
+                          1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,2,
+                          1,1,0,0,1,0,1,1,1,1,1,0,0,0,1,2,
+                          1,1,0,0,1,1,1,1,1,1,1,0,0,0,1,2,
+                          1,1,0,0,1,1,1,1,0,1,0,0,0,0,0,2,
+                          1,1,0,0,0,0,0,0,0,0,0,1,0,0,1,2,
+                          1,1,0,0,1,1,1,0,0,0,1,1,0,0,0,2,
+                          1,0,0,0,0,0,1,0,0,0,0,0,0,0,0,2,
+                          1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,2,
                           1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]
         
         const wallObj = []
-        console.log(wallObj)
         // function for drawing the map
         const drawMap = () => {
             let mapX = 0
@@ -305,16 +305,16 @@ const gameStateManager = () => {
                     wallObj.push(new Wall(mapX, mapY, 50, 50))
                     counter++
                     mapX += 50
-                    console.log(mapX)
+                    // console.log(mapX)
                 } else if (square === 2) {
                     wallObj.push(new Wall(mapX, mapY, 50, 50))
                     counter++
                     mapY += 50
                     mapX = 0
-                    console.log(mapX)
+                    // console.log(mapX)
                 } else {
                     mapX += 50
-                    console.log(mapX)
+                    // console.log(mapX)
                 }
                 // console.log(counter)
             })
@@ -333,12 +333,12 @@ const gameStateManager = () => {
             // then, draw the map
             wallObj.forEach(wall => {
                 wall.render()
+                wall.blockPlayer()
             })
             // set up handler for interactables
             interactables.forEach(interactables => {
                 collisionChecker(interactables)
             })
-            testWall.render()
             // // render interactables
             interactables.forEach(interactables => {
                 interactables.render()
