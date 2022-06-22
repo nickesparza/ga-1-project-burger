@@ -25,7 +25,7 @@ const gameStateManager = () => {
     const scoreUI = document.getElementById('score')
     scoreUI.innerHTML = `${score}`
     // timer
-    let timer = 10
+    let timer = 999
     const timerUI = document.getElementById('timer')
     timerUI.innerHTML = `${timer}`
     const countDown = (timer) => {
@@ -41,7 +41,7 @@ const gameStateManager = () => {
         }, timer * 1000)
     }
     const resetUI = () => {
-        timer = 10
+        timer = 999
         timerUI.innerHTML = `${timer}`
         score = 0
         scoreUI.innerHTML = `${score}`
@@ -84,8 +84,15 @@ const gameStateManager = () => {
             constructor(x, y) {
                 this.x = x,
                 this.y = y,
-                this.lastX = null,
-                this.lastY = null,
+                this.lastX = x,
+                this.lastY = y,
+                this.speed = 25,
+                this.direction = {
+                    up: false,
+                    down: false,
+                    left: false,
+                    right: false
+                },
                 this.width = 50,
                 this.height = 50,
                 this.image = '/imgs/testImage.bmp',
@@ -128,6 +135,53 @@ const gameStateManager = () => {
                     })
                 }
             }
+            // add methods to smooth out player movement
+            // setDirection unlocks player position
+            setDirection = function (key) {
+                // console.log(`this is the key that was pressed ${key}`)
+                if (key.toLowerCase() == 'w') { this.direction.up = true }
+                if (key.toLowerCase() == 'a') { this.direction.left = true }
+                if (key.toLowerCase() == 's') { this.direction.down = true }
+                if (key.toLowerCase() == 'd') { this.direction.right = true }
+            }
+            // unsetDirection will be keyup event to stop direction from being true
+            unSetDirection = function (key) {
+                if (key.toLowerCase() == 'w') { this.direction.up = false }
+                if (key.toLowerCase() == 'a') { this.direction.left = false }
+                if (key.toLowerCase() == 's') { this.direction.down = false }
+                if (key.toLowerCase() == 'd') { this.direction.right = false }
+            }
+            movePlayer = function () {
+                // move player looks at the direction and sends the object in the true direction
+                if (this.direction.up) {
+                    this.y -= this.speed
+                    this.lastY = this.y - this.speed
+                    if (this.y <= 0) {
+                        this.y = 0
+                    }
+                }
+                if (this.direction.left) {
+                    this.lastX = this.x
+                    this.x -= this.speed
+                    if (this.x <= 0) {
+                        this.x = 0
+                    }
+                }
+                if (this.direction.down) {
+                    this.lastY = this.y
+                    this.y += this.speed
+                    if (this.y + this.height >= canvas.height) {
+                        this.y = canvas.height - this.height
+                    }
+                }
+                if (this.direction.right) {
+                    this.lastX = this.x
+                    this.x += this.speed
+                    if (this.x + this.width >= canvas.width) {
+                        this.x = canvas.width - this.width
+                    }
+                }
+            }
         }
         // define class for generic wall object that player cannot move through
         class Wall {
@@ -138,19 +192,18 @@ const gameStateManager = () => {
                 this.height = height,
                 this.image = 'imgs/textImage.png',
                 this.render = function () {
-                    // ctx.fillStyle = 'gray'
-                    // ctx.fillRect(this.x, this.y, this.width, this.height)
-                    const wallImage = new Image()
-                    wallImage.src = this.image
-                    wallImage.onload = () => {
-                        ctx.drawImage(wallImage, this.x, this.y)
-                    }
+                    ctx.fillStyle = 'gray'
+                    ctx.fillRect(this.x, this.y, this.width, this.height)
+                    // const wallImage = new Image()
+                    // wallImage.src = this.image
+                    // wallImage.onload = () => {
+                    //     ctx.drawImage(wallImage, this.x, this.y)
+                    // }
                 }
-                this.blockPlayer = function () {
-                    if (player.x === this.x && player.y === this.y) {
-                        player.y = player.lastY
-                        player.x = player.lastX
-                    }
+            }
+            blockPlayer = function (player) {
+                if (player.x + player.width >= this.x && player.x <= this.x + this.width) {
+                    player.speed = 0
                 }
             }
         }
@@ -223,56 +276,61 @@ const gameStateManager = () => {
             if (player.x === interactable.x && player.y === interactable.y) {
                 if (interactable instanceof Generator) {
                     interactable.giveIngredient()
-                } else {
+                } else if (interactable instanceof Scorer) {
                     interactable.checkIngredients()
+                }
+            }
+            if (interactable instanceof Wall) {
+                if (player.x + player.width === (interactable.y + interactable.height) + (interactable.width + interactable.height)) {
+                    player.direction.up = false
                 }
             }
         }
         // handler for moving with the keyboard
-        const movementHandler = (e) => {
-            switch (e.keyCode) {
-                case (87): // W
-                case (38): // up arrow
-                    // this moves the player up
-                    player.lastY = player.y
-                    player.lastX = player.x
-                    player.y -= 50
-                    // console.log(`player's last Y position: ${player.lastY}`)
-                    // console.log(`player's current Y position: ${player.y}`)
-                    // console.log(`player's current X position: ${player.x}`)
-                    break
-                case (65): // A
-                case (37): // left arrow
-                    // this moves the player left
-                    player.lastX = player.x
-                    player.lastY = player.y
-                    player.x -= 50
-                    // console.log(`player's last X position: ${player.lastX}`)
-                    // console.log(`player's current X position: ${player.x}`)
-                    // console.log(`player's current Y position: ${player.y}`)
-                    break
-                case (83): // S
-                case (40): // down arrow
-                    // this moves the player down
-                    player.lastY = player.y
-                    player.lastX = player.x
-                    player.y += 50
-                    // console.log(`player's last Y position: ${player.lastY}`)
-                    // console.log(`player's current Y position: ${player.y}`)
-                    // console.log(`player's current X position: ${player.x}`)
-                    break
-                case (68): // D
-                case (39): // right arrow
-                    // this moves the player right
-                    player.lastX = player.x
-                    player.lastY = player.y
-                    player.x += 50
-                    // console.log(`player's last X position: ${player.lastX}`)
-                    // console.log(`player's current X position: ${player.x}`)
-                    // console.log(`player's current Y position: ${player.y}`)
-                    break
-            }
-        }
+        // const movementHandler = (e) => {
+        //     switch (e.keyCode) {
+        //         case (87): // W
+        //         case (38): // up arrow
+        //             // this moves the player up
+        //             player.lastY = player.y
+        //             player.lastX = player.x
+        //             player.y -= 50
+        //             // console.log(`player's last Y position: ${player.lastY}`)
+        //             // console.log(`player's current Y position: ${player.y}`)
+        //             // console.log(`player's current X position: ${player.x}`)
+        //             break
+        //         case (65): // A
+        //         case (37): // left arrow
+        //             // this moves the player left
+        //             player.lastX = player.x
+        //             player.lastY = player.y
+        //             player.x -= 50
+        //             // console.log(`player's last X position: ${player.lastX}`)
+        //             // console.log(`player's current X position: ${player.x}`)
+        //             // console.log(`player's current Y position: ${player.y}`)
+        //             break
+        //         case (83): // S
+        //         case (40): // down arrow
+        //             // this moves the player down
+        //             player.lastY = player.y
+        //             player.lastX = player.x
+        //             player.y += 50
+        //             // console.log(`player's last Y position: ${player.lastY}`)
+        //             // console.log(`player's current Y position: ${player.y}`)
+        //             // console.log(`player's current X position: ${player.x}`)
+        //             break
+        //         case (68): // D
+        //         case (39): // right arrow
+        //             // this moves the player right
+        //             player.lastX = player.x
+        //             player.lastY = player.y
+        //             player.x += 50
+        //             // console.log(`player's last X position: ${player.lastX}`)
+        //             // console.log(`player's current X position: ${player.x}`)
+        //             // console.log(`player's current Y position: ${player.y}`)
+        //             break
+        //     }
+        // }
         // function to detect edge collision and reset player to in-bounds
         const detectEdge = () => {
             if (player.x < 0) {
@@ -284,6 +342,7 @@ const gameStateManager = () => {
             } else if (player.y + player.height > canvas.height) {
                 player.y = canvas.height - player.height
             }
+
         }
         // instantiate a player object
         let player = new Player(50, 50)
@@ -363,26 +422,44 @@ const gameStateManager = () => {
             ctx.clearRect(0, 0, canvas.width, canvas.height)
             // then, draw the map
             wallObj.forEach(wall => {
-                wall.blockPlayer()
+                // wall.blockPlayer(player)
+                collisionChecker(wall)
                 wall.render()
             })
             // then, detect if the player is outside the bounds of the canvas and reset them if necessary
-            detectEdge()
-            // set up handler for interactables
-            interactables.forEach(interactables => {
-                collisionChecker(interactables)
-            })
-            // // render interactables
-            interactables.forEach(interactables => {
-                interactables.render()
+            // detectEdge()
+            // set up handler for interactables to check collision and render
+            interactables.forEach(interactable => {
+                collisionChecker(interactable)
+                interactable.render()
             })
             // then, render the player
             player.render()
             // finally, render the current burger stack on top of the player
             player.drawBurger(player.ingredients)
+            player.movePlayer()
         }, 60)
         // listener for key presses
-        document.addEventListener('keydown', movementHandler)
+        // document.addEventListener('keydown', movementHandler)
+        // two new event listeners are needed, for keyup and keydown
+        document.addEventListener('keydown', (e) => {
+            // when the key is down, set the direction to true according to the function
+            player.setDirection(e.key)
+        })
+
+        document.addEventListener('keyup', (e) => {
+            // this will look different from keydown
+            // needs to make sure it only applies to the keys we listed in unSetDirection
+            if (['w', 'a', 's', 'd'].includes(e.key)) {
+                player.unSetDirection(e.key)
+            }
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key == 'f') {
+                console.log(`player X ${player.x} player Y ${player.y} player lastX ${player.lastX} player lastY ${player.lastY}`)
+            }
+        })
+        })
         // includes function to clear interval on play when timer hits zero and start resultsManager
         countDown(timer)
         setTimeout(() => {
