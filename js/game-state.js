@@ -25,7 +25,7 @@ const gameStateManager = () => {
     const scoreUI = document.getElementById('score')
     scoreUI.innerHTML = `${score}`
     // timer
-    let timer = 120
+    let timer = 10
     const timerUI = document.getElementById('timer')
     timerUI.innerHTML = `${timer}`
     const countDown = (timer) => {
@@ -41,7 +41,7 @@ const gameStateManager = () => {
         }, timer * 1000)
     }
     const resetUI = () => {
-        timer = 120
+        timer = 10
         timerUI.innerHTML = `${timer}`
         score = 0
         scoreUI.innerHTML = `${score}`
@@ -88,11 +88,17 @@ const gameStateManager = () => {
                 this.lastY = null,
                 this.width = 50,
                 this.height = 50,
+                this.image = '/imgs/testImage.bmp',
                 // empty starting array to fill with ingredients
                 this.ingredients = [],
                 // variable which becomes true when all ingredients have been added to ingredients array
                 this.scoreable = false,
                 this.render = function () {
+                    // const playerImage = new Image()
+                    // playerImage.src = this.image
+                    // playerImage.onload = () => {
+                    //     ctx.drawImage(playerImage, this.x, this.y)
+                    // }
                     ctx.fillStyle = 'green'
                     ctx.fillRect(this.x, this.y, this.width, this.height)
                 }
@@ -130,9 +136,15 @@ const gameStateManager = () => {
                 this.y = y,
                 this.width = width,
                 this.height = height,
+                this.image = 'imgs/textImage.png',
                 this.render = function () {
-                    ctx.fillStyle = 'gray'
-                    ctx.fillRect(this.x, this.y, this.width, this.height)
+                    // ctx.fillStyle = 'gray'
+                    // ctx.fillRect(this.x, this.y, this.width, this.height)
+                    const wallImage = new Image()
+                    wallImage.src = this.image
+                    wallImage.onload = () => {
+                        ctx.drawImage(wallImage, this.x, this.y)
+                    }
                 }
                 this.blockPlayer = function () {
                     if (player.x === this.x && player.y === this.y) {
@@ -346,6 +358,7 @@ const gameStateManager = () => {
         drawObjective()
         // setInterval for anonymous play manager function that is saved to a variable and starts immediately
         const playID = setInterval(() => {
+        // const playID = requestAnimationFrame(() => {
             // render and collision and scoring functions that push information to DOM elements
             ctx.clearRect(0, 0, canvas.width, canvas.height)
             // then, draw the map
