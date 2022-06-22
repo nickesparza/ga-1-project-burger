@@ -4,10 +4,16 @@ body {
     justify-content: center;
 }
 
-canvas {
+#canvas {
     background-color: black;
     width: 800px;
     height: 600px;
+}
+
+#target {
+    background-color: black;
+    width: 180px;
+    height: 280px;
 }
 
 main {

@@ -1,11 +1,19 @@
 // global variables
-// canvas element
+// game canvas element
 const canvas = document.getElementById('canvas')
-// context
+// game context
 const ctx = canvas.getContext('2d')
 // computed styles
 canvas.setAttribute('width', getComputedStyle(canvas)['width'])
 canvas.setAttribute('height', getComputedStyle(canvas)['height'])
+
+// game canvas element
+const objectiveWindow = document.getElementById('target')
+// game context
+const ctxTarget = objectiveWindow.getContext('2d')
+// computed styles
+objectiveWindow.setAttribute('width', getComputedStyle(objectiveWindow)['width'])
+objectiveWindow.setAttribute('height', getComputedStyle(objectiveWindow)['height'])
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -125,16 +133,8 @@ const gameStateManager = () => {
                 }
                 this.blockPlayer = function () {
                     if (player.x === this.x && player.y === this.y) {
-                        // console.log(`a collision has occurred`)
-                        // console.log(`player's last X position: ${player.lastX}`)
-                        // console.log(`player's last Y position: ${player.lastY}`)
                         player.y = player.lastY
                         player.x = player.lastX
-                        // console.log(`player's current X position: ${player.x}`)
-                        // console.log(`player's current Y position: ${player.y}`)
-                        // console.log(`player's last X position: ${player.lastX}`)
-                        // console.log(`player's last Y position: ${player.lastY}`)
-                        // console.log(`end collision report`)
                     }
                 }
             }
@@ -273,7 +273,7 @@ const gameStateManager = () => {
         // instantiate a player object
         let player = new Player(50, 50)
 
-        // instantiate a generator object
+        // instantiate generator objects
         let tomato = new Generator(400, 300, 'tomato', 'red')
         let cheese = new Generator(250, 200, 'cheese', '#fcba03')
         let lettuce = new Generator(50, 450, 'lettuce', '#18db18')
@@ -281,9 +281,14 @@ const gameStateManager = () => {
         let patty = new Generator(500, 500, 'patty', '#633313')
         let scorer = new Scorer(100, 0)
 
+        // arrays for checking ingredients and interactables
+        const ingArray = [patty, cheese, lettuce, tomato, mustard]
+        const interactables = [tomato, cheese, lettuce, mustard, patty, scorer]
+        
+        // array to determine placement of wall objects
         const mapArray = [1,1,0,1,1,1,1,1,1,1,1,1,1,1,1,2,
-                          1,0,0,0,0,0,1,1,1,0,0,0,0,0,0,2,
-                          1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,2,
+                          1,0,0,0,0,1,1,1,1,1,0,0,0,0,0,2,
+                          1,1,0,0,0,0,0,0,1,0,0,0,1,1,0,2,
                           1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,2,
                           1,1,0,0,1,0,1,1,1,1,1,0,0,0,1,2,
                           1,1,0,0,1,1,1,1,1,1,1,0,0,0,1,2,
@@ -294,6 +299,7 @@ const gameStateManager = () => {
                           1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,2,
                           1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]
         
+        // empty array to store all wall objects once they are created
         const wallObj = []
         // function for drawing the map
         const drawMap = () => {
@@ -319,11 +325,22 @@ const gameStateManager = () => {
                 // console.log(counter)
             })
         }
+        // call draw function for map
         drawMap()
-        // arrays for checking ingredients and interactables
-        const ingArray = [tomato, cheese, lettuce, mustard, patty]
-        const interactables = [tomato, cheese, lettuce, mustard, patty, scorer]
 
+        // iterator for rendering the objective burger in the objective window
+        const drawObjective = () => {
+            let stackPosition = 200
+            ctxTarget.fillStyle = "brown"
+            ctxTarget.fillRect(30, 225, 120, 20)
+            ctxTarget.fillRect(30, 75, 120, 20)
+            ingArray.forEach(ingredient => {
+                ctxTarget.fillStyle = ingredient.color
+                ctxTarget.fillRect(30, stackPosition, 120, 20)
+                stackPosition -= 25
+            })
+        }
+        drawObjective()
         // setInterval for anonymous play manager function that is saved to a variable and starts immediately
         const playID = setInterval(() => {
             // render and collision and scoring functions that push information to DOM elements
