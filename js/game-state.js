@@ -20,8 +20,6 @@ objectiveWindow.setAttribute('height', getComputedStyle(objectiveWindow)['height
 // gameStateManager that runs when DOM loads
 const gameStateManager = () => {
     // scope variables
-    // text style for context
-    ctx.font = '32px Helvetica'
     // score
     let score = 0
     const scoreUI = document.getElementById('score')
@@ -61,8 +59,13 @@ const gameStateManager = () => {
         const titleID = setInterval(() => {
             // render functions for title screen, animated elements?
             ctx.clearRect(0, 0, canvas.width, canvas.height)
+                // text style for context
+            ctx.font = '32px Helvetica'
             ctx.fillStyle = 'white'
-            ctx.fillText('Burger Rush: Press W to begin', 175, 275)
+            ctx.fillText('Burger Rush: Press any key to begin', 50, 100)
+            ctx.font = '24px Helvetica'
+            ctx.fillText('Move with WASD or arrow keys', 50, 325)
+            ctx.fillText('Collect all the ingredients and deliver them to the service window', 50, 375)
         }, 60)
         // includes listener for W keypress that ends interval using return from setInterval and starts playManager
         document.addEventListener('keydown', function () {
