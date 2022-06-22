@@ -345,13 +345,13 @@ const gameStateManager = () => {
         const playID = setInterval(() => {
             // render and collision and scoring functions that push information to DOM elements
             ctx.clearRect(0, 0, canvas.width, canvas.height)
-            // then, detect if the player is outside the bounds of the canvas and reset them if necessary
-            detectEdge()
             // then, draw the map
             wallObj.forEach(wall => {
-                wall.render()
                 wall.blockPlayer()
+                wall.render()
             })
+            // then, detect if the player is outside the bounds of the canvas and reset them if necessary
+            detectEdge()
             // set up handler for interactables
             interactables.forEach(interactables => {
                 collisionChecker(interactables)
