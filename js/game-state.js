@@ -147,17 +147,15 @@ const gameStateManager = () => {
             movePlayer = function () {
                 // move player looks at the direction and sends the object in the true direction
                 if (this.direction.up) {
-                    if (getTile(this.x + 25, (this.y - 50) !== '1')) {
+                    if (getTile(this.x + 25, this.y - 25) !== 1 && getTile(this.x, this.y - 25) !== 1) {
                         this.y -= this.speed
-                    } else {
-                        console.log(getTile(this.x + 25, this.y - 50))
                     }
                     if (this.y <= 0) {
                         this.y = 0
                     }
                 }
                 if (this.direction.left) {
-                    if (getTile((this.x - this.speed) + 1, this.y + 25) !== '1') {
+                    if (getTile((this.x - 25) + 1, this.y) !== 1 && getTile((this.x - 25) + 1, this.y + 25) !== 1) {
                         this.x -= this.speed
                       }
                     if (this.x <= 0) {
@@ -165,7 +163,7 @@ const gameStateManager = () => {
                     }
                 }
                 if (this.direction.down) {
-                    if (getTile(this.x + 25, (this.y + 50)) !== '1') {
+                    if (getTile((this.x + 25) - 1, (this.y + 50)) !== 1 && getTile((this.x + 25) + 1, (this.y + 50)) !== 1) {
                         this.y += this.speed
                     }
                     if (this.y + this.height >= canvas.height) {
@@ -173,7 +171,7 @@ const gameStateManager = () => {
                     }
                 }
                 if (this.direction.right) {
-                    if (getTile(((player.x + player.width) + player.speed) - 1, player.y + 25) !== '1') {
+                    if (getTile(((this.x + this.width) + 1), this.y) !== 1 && getTile(((this.x + this.width) + 1), this.y + 25) !== 1) {
                         this.x += this.speed;
                       }
                     if (this.x + this.width >= canvas.width) {
@@ -271,7 +269,7 @@ const gameStateManager = () => {
             }
         }
         // instantiate a player object
-        let player = new Player(50, 50)
+        let player = new Player(150, 100)
 
         // instantiate generator objects
         let tomato = new Generator(400, 300, 'tomato', 'red')
@@ -279,78 +277,43 @@ const gameStateManager = () => {
         let lettuce = new Generator(50, 450, 'lettuce', '#18db18')
         let mustard = new Generator(700, 300, 'mustard', '#e8f00e')
         let patty = new Generator(500, 500, 'patty', '#633313')
-        let scorer = new Scorer(100, 0)
+        let scorer = new Scorer(50, 50)
 
         // arrays for checking ingredients and interactables
         const ingArray = [patty, cheese, lettuce, tomato, mustard]
         const interactables = [tomato, cheese, lettuce, mustard, patty, scorer]
-        
-        // array to determine placement of wall objects
-        const mapArray = [1,1,0,1,1,1,1,1,1,1,1,1,1,1,1,2,
-                          1,0,0,0,0,1,1,1,1,1,0,0,0,0,0,2,
-                          1,1,0,0,0,0,0,0,1,0,0,0,1,1,0,2,
-                          1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,2,
-                          1,1,0,0,1,0,1,1,1,1,1,0,0,0,1,2,
-                          1,1,0,0,1,1,1,1,1,1,1,0,0,0,1,2,
-                          1,1,0,0,1,1,1,1,0,1,0,0,0,0,0,2,
-                          1,1,0,0,0,0,0,0,0,0,0,1,0,0,1,2,
-                          1,1,0,0,1,1,1,0,0,0,1,1,0,0,0,2,
-                          1,0,0,0,0,0,1,0,0,0,0,0,0,0,0,2,
-                          1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,2,
-                          1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]
-        
-        // test array
-        const level = '1101111111111111\n1000011111000001\n1100000010001101\n1100000000000001\n1100101111100011\n1100111111100011\n1100111101000001\n1100000000010011\n1100111000110001\n1000001000000001\n1111111111011111\n1111111111111111'
 
-        function parse(level){
-            const lines = level.split("\n");
-            const characters = lines.map(l => l.split(""));
-            return characters;
-          }
+        // two-dimensional array to determine where to draw walls
+        const mapArray = [
+            [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+            [1,0,0,0,0,1,1,1,1,1,0,0,0,0,0,1],
+            [1,1,0,0,0,0,0,0,1,0,0,0,1,1,0,1],
+            [1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+            [1,1,0,0,1,0,1,1,1,1,1,0,0,0,1,1],
+            [1,1,0,0,1,1,1,1,1,1,1,0,0,0,1,1],
+            [1,1,0,0,1,1,1,1,0,1,0,0,0,0,0,1],
+            [1,1,0,0,0,0,0,0,0,0,0,1,0,0,1,1],
+            [1,1,0,0,1,1,1,0,0,0,1,1,0,0,0,1],
+            [1,0,0,0,0,0,1,0,0,0,0,0,0,0,0,1],
+            [1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1],
+            [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]
+        ]
         
-        let currentLevel = parse(level)
-        
-        function draw(){
+        function drawMap(){
             ctx.fillStyle = "gray";
-            for (let row = 0; row < currentLevel.length; row++) {
-              for (let col = 0; col < currentLevel[0].length; col++) {
-                if (currentLevel[row][col] === "1") {
+            for (let row = 0; row < mapArray.length; row++) {
+              for (let col = 0; col < mapArray[0].length; col++) {
+                if (mapArray[row][col] === 1) {
                   ctx.fillRect(col * 50, row * 50, 50, 50);
                 }
               }
             }
           }
-        
-        // empty array to store all wall objects once they are created
-        const wallObj = []
 
         function getTile(x, y){
-            return(currentLevel[Math.floor(y / 50)][Math.floor(x / 50)]);
+            return(mapArray[Math.floor(y / 50)][Math.floor(x / 50)]);
           }
-        // function for drawing the map
-        const drawMap = () => {
-            let mapX = 0
-            let mapY = 0
-            let counter = 0
-            mapArray.forEach(square => {
-                if (square === 1) {
-                    wallObj.push(new Wall(mapX, mapY, 50, 50))
-                    counter++
-                    mapX += 50
-                    // console.log(mapX)
-                } else if (square === 2) {
-                    wallObj.push(new Wall(mapX, mapY, 50, 50))
-                    counter++
-                    mapY += 50
-                    mapX = 0
-                    // console.log(mapX)
-                } else {
-                    mapX += 50
-                    // console.log(mapX)
-                }
-                // console.log(counter)
-            })
-        }
+
         // call draw function for map
         // drawMap()
         // iterator for rendering the objective burger in the objective window
@@ -369,17 +332,10 @@ const gameStateManager = () => {
         // setInterval for anonymous play manager function that is saved to a variable and starts immediately
         const playID = setInterval(() => {
         // const playID = requestAnimationFrame(() => {
-            // render and collision and scoring functions that push information to DOM elements
+            // first clear canvas
             ctx.clearRect(0, 0, canvas.width, canvas.height)
             // then, draw the map
-            draw()
-            // wallObj.forEach(wall => {
-            //     // wall.blockPlayer(player)
-            //     wall.blockPlayer(player)
-            //     wall.render()
-            // })
-            // then, detect if the player is outside the bounds of the canvas and reset them if necessary
-            // detectEdge()
+            drawMap()
             // set up handler for interactables to check collision and render
             interactables.forEach(interactable => {
                 collisionChecker(interactable)
@@ -398,7 +354,6 @@ const gameStateManager = () => {
         })
 
         document.addEventListener('keyup', (e) => {
-            // this will look different from keydown
             // needs to make sure it only applies to the keys we listed in unSetDirection
             if (['w', 'a', 's', 'd'].includes(e.key)) {
                 player.unSetDirection(e.key)
