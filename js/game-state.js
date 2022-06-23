@@ -30,6 +30,7 @@ const gameStateManager = () => {
     const timerUI = document.getElementById('timer')
     timerUI.innerHTML = `${timer}`
     // countdown function that begins when the player hits a key from the titleManager
+    // also pushed current time to DOM
     const countDown = (timer) => {
         timerUI.innerHTML = `${timer}`
         const timerID = setInterval(() => {
@@ -39,6 +40,7 @@ const gameStateManager = () => {
                 timerUI.style.color = 'red'
             }
         }, 1000)
+        // set timeout for timer to clear its interval when it hits zero
         setTimeout(() => {
             clearInterval(timerID)
             // console.log(`time's up`)
@@ -56,7 +58,7 @@ const gameStateManager = () => {
     let successOrders = 0
     // failed orders
     let failedOrders = 0
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////TITLE SCREEN MANAGER//////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // titleManager function that starts interval when game state runs
     const titleManager = () => {
@@ -82,11 +84,13 @@ const gameStateManager = () => {
             playManager()
         }, {once: true})
     }
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////GAMEPLAY MANAGER//////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // playManager function that runs when triggered from titleManager event listener
     const playManager = () => {
         console.log(`playManager running`)
+        let playerImage = new Image()
+        playerImage.src = '/imgs/textImage.png'
         // define player class
         class Player {
             constructor(x, y) {
@@ -101,7 +105,7 @@ const gameStateManager = () => {
                 },
                 this.width = 50,
                 this.height = 50,
-                this.image = '/imgs/testImage.bmp',
+                this.image = '/imgs/textImage.png',
                 // empty starting array to fill with ingredients
                 this.ingredients = [],
                 // variable which becomes true when all ingredients have been added to ingredients array
@@ -133,14 +137,9 @@ const gameStateManager = () => {
                 })
             }
             render = function () {
-                // ctx.fillStyle = 'green'
-                // ctx.fillRect(this.x, this.y, this.width, this.height)
-                let image = new Image()
-                image.src = '/imgs/textImage.png'
-                image.onload = function () {
-                    // console.log(`coordinates are: ${this.x}, ${this.y}`)
-                    ctx.drawImage(image, player.x, player.y)
-                }
+                // ctx.drawImage(playerImage, this.x, this.y, this.width, this.height)
+                ctx.fillStyle = 'green'
+                ctx.fillRect(this.x, this.y, this.width, this.height)
             }
             // add methods to smooth out player movement
             // setDirection unlocks player position
@@ -344,7 +343,7 @@ const gameStateManager = () => {
             setTimeout(drawObjective, 500)
             setTimeout(() => { window.style.backgroundColor = 'black' }, 500)
         }
-/////////////////////////////////////////GAME LOOP BELOW//////////////////////////////////////////////////////////////
+/////////////////////////////////////////GAME LOOP BELOW/////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // setInterval for anonymous play manager function that is saved to a variable and starts immediately
         const playID = setInterval(() => {
@@ -364,7 +363,7 @@ const gameStateManager = () => {
             player.drawBurger(player.ingredients)
             player.movePlayer()
         }, 60)
-/////////////////////////////////////////END GAME LOOP////////////////////////////////////////////////////////////////
+/////////////////////////////////////////END GAME LOOP///////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // two new event listeners are needed, for keyup and keydown
         document.addEventListener('keydown', (e) => {
@@ -388,7 +387,7 @@ const gameStateManager = () => {
             setTimeout(resultsManager, 2000)
         }, timer * 1000)
     }
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////RESULTS SCREEN MANAGER////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // resultsManager function that runs when triggered from endGame function inside of playManager
     const resultsManager = () => {
