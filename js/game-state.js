@@ -65,16 +65,17 @@ const gameStateManager = () => {
         const titleID = setInterval(() => {
             // render functions for title screen, animated elements?
             ctx.clearRect(0, 0, canvas.width, canvas.height)
-                // text style for context
+            // text style for context
             ctx.font = '32px Helvetica'
             ctx.fillStyle = 'white'
+            // UI messages and instructions
             ctx.fillText('Burger Rush: Press any key to begin', 50, 100)
             ctx.font = '24px Helvetica'
             ctx.fillText('Move with WASD or arrow keys', 50, 325)
             ctx.fillText('Collect all the ingredients (blue)', 50, 375)
             ctx.fillText('and deliver them to the service window (purple)', 50, 400)
         }, 60)
-        // includes listener for W keypress that ends interval using return from setInterval and starts playManager
+        // includes listener for keypress that ends interval using return from setInterval and starts playManager
         document.addEventListener('keydown', function () {
             clearInterval(titleID)
             console.log(`titleManager interval cleared`)
@@ -104,38 +105,41 @@ const gameStateManager = () => {
                 // empty starting array to fill with ingredients
                 this.ingredients = [],
                 // variable which becomes true when all ingredients have been added to ingredients array
-                this.scoreable = false,
-                this.render = function () {
-                    ctx.fillStyle = 'green'
-                    ctx.fillRect(this.x, this.y, this.width, this.height)
-                    // playerImage.onload = function () {
-                    //     ctx.drawImage(playerImage, this.x, this.y)
-                    // }
-                }
-                // function to draw burger ingredients in order of acquisition
-                this.drawBurger = function (array) {
-                    // set variable for where within player graphicto begin stack
-                    let stackPosition = 35
-                    // set bottom bun color and draw
-                    ctx.fillStyle = 'brown'
-                    ctx.fillRect(this.x + 15, this.y + 40, 20, 5)
-                    // iterate through ingredients array to grab attributes
-                    array.forEach(ingredient => {
-                        // if this is the first ingredient, draw it at origin
-                        if (array[0] === ingredient) {
-                            ctx.fillStyle = ingredient.color
-                            ctx.fillRect(this.x + 15, this.y + stackPosition, 20, 5)
-                            stackPosition -= 5
-                        } else {
-                        // if it's not the first ingredient, draw it above the previous ingredient
-                            ctx.fillStyle = ingredient.color
-                            ctx.fillRect(this.x + 15, this.y + stackPosition, 20, 5)
-                            stackPosition -= 5
-                        }
-                    // draw top bun that stays on top of burger stack
-                    ctx.fillStyle = 'brown'
-                    ctx.fillRect(this.x + 15, this.y + stackPosition, 20, 5)
-                    })
+                this.scoreable = false                
+            }
+            // function to draw burger ingredients in order of acquisition
+            drawBurger = function (array) {
+                // set variable for where within player graphicto begin stack
+                let stackPosition = 35
+                // set bottom bun color and draw
+                ctx.fillStyle = 'brown'
+                ctx.fillRect(this.x + 15, this.y + 40, 20, 5)
+                // iterate through ingredients array to grab attributes
+                array.forEach(ingredient => {
+                    // if this is the first ingredient, draw it at origin
+                    if (array[0] === ingredient) {
+                        ctx.fillStyle = ingredient.color
+                        ctx.fillRect(this.x + 15, this.y + stackPosition, 20, 5)
+                        stackPosition -= 5
+                    } else {
+                    // if it's not the first ingredient, draw it above the previous ingredient
+                        ctx.fillStyle = ingredient.color
+                        ctx.fillRect(this.x + 15, this.y + stackPosition, 20, 5)
+                        stackPosition -= 5
+                    }
+                // draw top bun that stays on top of burger stack
+                ctx.fillStyle = 'brown'
+                ctx.fillRect(this.x + 15, this.y + stackPosition, 20, 5)
+                })
+            }
+            render = function () {
+                // ctx.fillStyle = 'green'
+                // ctx.fillRect(this.x, this.y, this.width, this.height)
+                let image = new Image()
+                image.src = '/imgs/textImage.png'
+                image.onload = function () {
+                    // console.log(`coordinates are: ${this.x}, ${this.y}`)
+                    ctx.drawImage(image, player.x, player.y)
                 }
             }
             // add methods to smooth out player movement
@@ -157,6 +161,7 @@ const gameStateManager = () => {
             movePlayer = function () {
                 // move player looks at the direction and sends the object in the true direction
                 if (this.direction.up) {
+                    // if the coordinates specified by getTile correspond to an array index with a 1 (meaning a solid block), do nothing, otherwise let the player move
                     if (getTile(this.x + 25, this.y - 25) !== 1 && getTile(this.x, this.y - 25) !== 1) {
                         this.y -= this.speed
                     }
@@ -165,7 +170,7 @@ const gameStateManager = () => {
                     }
                 }
                 if (this.direction.left) {
-                    if (getTile((this.x - 25) + 1, this.y) !== 1 && getTile((this.x - 25) + 1, this.y + 25) !== 1) {
+                    if (getTile((this.x - this.speed) + 1, this.y) !== 1 && getTile((this.x - 25) + 1, this.y + 25) !== 1) {
                         this.x -= this.speed
                       }
                     if (this.x <= 0) {
@@ -173,7 +178,7 @@ const gameStateManager = () => {
                     }
                 }
                 if (this.direction.down) {
-                    if (getTile((this.x + 25) - 1, (this.y + 50)) !== 1 && getTile((this.x + 25) + 1, (this.y + 50)) !== 1) {
+                    if (getTile((this.x + this.speed) - 1, (this.y + 50)) !== 1 && getTile((this.x + this.speed) + 1, (this.y + 50)) !== 1) {
                         this.y += this.speed
                     }
                     if (this.y + this.height >= canvas.height) {
@@ -181,7 +186,7 @@ const gameStateManager = () => {
                     }
                 }
                 if (this.direction.right) {
-                    if (getTile(((this.x + this.width) + 1), this.y) !== 1 && getTile(((this.x + this.width) + 1), this.y + 25) !== 1) {
+                    if (getTile(((this.x + this.width) + 1), this.y) !== 1 && getTile(((this.x + this.width) + 1), this.y + this.speed) !== 1) {
                         this.x += this.speed;
                       }
                     if (this.x + this.width >= canvas.width) {
@@ -196,31 +201,31 @@ const gameStateManager = () => {
                 this.x = x,
                 this.y = y,
                 this.width = 50,
-                this.height = 50,
-                // function to check ingredients
-                this.checkIngredients = function () {
-                    // if player has all ingredients, delete ingredients and increment score
-                    if (player.scoreable === true) {
-                        correctOrIncorrect('#09e030')
-                        player.scoreable = false
-                        score += 100
-                        successOrders += 1
-                        player.ingredients.length = 0
-                        scoreUI.innerHTML = `${score}`
-                        // console.log(`Players ingredient list is now ${player.ingredients}`)
-                        console.log(`You scored a point`)
-                    // if they don't, delete ingredients and display error message
-                    } else if (player.ingredients.length > 0 && player.ingredients.length < ingArray.length) {
-                        correctOrIncorrect('red')
-                        player.ingredients.length = 0
-                        failedOrders += 1
-                        console.log(`You screwed up! Not all ingredients were added`)
-                    }
-                },
-                this.render = function () {
-                    ctx.fillStyle = 'rgb(255, 133, 230, .5)'
-                    ctx.fillRect(this.x, this.y, this.width, this.height)
+                this.height = 50
+            }
+            // function to check ingredients
+            checkIngredients = function () {
+                // if player has all ingredients, delete ingredients, increment score, and flash green objective
+                if (player.scoreable === true) {
+                    correctOrIncorrect('#09e030')
+                    player.scoreable = false
+                    score += 100
+                    successOrders += 1
+                    player.ingredients.length = 0
+                    scoreUI.innerHTML = `${score}`
+                    // console.log(`Players ingredient list is now ${player.ingredients}`)
+                    // console.log(`You scored a point`)
+                // if they don't, delete ingredients and flash red objective
+                } else if (player.ingredients.length > 0 && player.ingredients.length < ingArray.length) {
+                    correctOrIncorrect('red')
+                    player.ingredients.length = 0
+                    failedOrders += 1
+                    // console.log(`You screwed up! Not all ingredients were added`)
                 }
+            }
+            render = function () {
+                ctx.fillStyle = 'rgb(255, 133, 230, .5)'
+                ctx.fillRect(this.x, this.y, this.width, this.height)
             }
         }
         // define a "generator" class that sits on the grid and gives the player an ingredient
@@ -232,28 +237,28 @@ const gameStateManager = () => {
                 this.height = 50,
                 // attribute that determines what ingredient the generator gives
                 this.ingredient = ingredient,
-                this.color = color,
-                // function to give ingredients
-                this.giveIngredient = function () {
-                    // if player does not 'have' ingredient, give it to them
-                    if (!player.ingredients.includes(this)) {
-                        player.ingredients.push(this)
-                        // console.log(`Player has obtained ${this.ingredient}`)
-                        // console.log(player.ingredients)
-                    }
-                    // check for all ingredients and make player scoreable
-                    if (player.ingredients.length === ingArray.length && player.scoreable === false) {
-                        player.scoreable = true
-                        // console.log(`player can now score a point`)
-                    }
-                },
-                // function to render generator on screen
-                this.render = function () {
-                    ctx.fillStyle = 'rgb(44, 133, 230, .5)'
-                    ctx.fillRect(this.x, this.y, this.width, this.height)
-                    ctx.fillStyle = this.color
-                    ctx.fillRect(this.x + 15, this.y + 25, 20, 5)
+                this.color = color                
+            }
+            // function to give ingredients
+            giveIngredient = function () {
+                // if player does not 'have' ingredient, give it to them
+                if (!player.ingredients.includes(this)) {
+                    player.ingredients.push(this)
+                    // console.log(`Player has obtained ${this.ingredient}`)
+                    // console.log(player.ingredients)
                 }
+                // check for all ingredients and make player scoreable
+                if (player.ingredients.length === ingArray.length && player.scoreable === false) {
+                    player.scoreable = true
+                    // console.log(`player can now score a point`)
+                }
+            }
+            // function to render generator on screen
+            render = function () {
+                ctx.fillStyle = 'rgb(44, 133, 230, .5)'
+                ctx.fillRect(this.x, this.y, this.width, this.height)
+                ctx.fillStyle = this.color
+                ctx.fillRect(this.x + 15, this.y + 25, 20, 5)
             }
         }
         // checker function for giving player an ingredient
