@@ -116,8 +116,8 @@ const gameStateManager = () => {
                 // set variable for where within player graphicto begin stack
                 let stackPosition = 35
                 // set bottom bun color and draw
-                ctx.fillStyle = 'brown'
-                ctx.fillRect(this.x + 15, this.y + 40, 20, 5)
+                ctx.fillStyle = '#c98224'
+                ctx.fillRect(this.x + 15, this.y + stackPosition + 5, 20, 5)
                 // iterate through ingredients array to grab attributes
                 array.forEach(ingredient => {
                     // if this is the first ingredient, draw it at origin
@@ -132,7 +132,7 @@ const gameStateManager = () => {
                         stackPosition -= 5
                     }
                 // draw top bun that stays on top of burger stack
-                ctx.fillStyle = 'brown'
+                ctx.fillStyle = '#c98224'
                 ctx.fillRect(this.x + 15, this.y + stackPosition, 20, 5)
                 })
             }
