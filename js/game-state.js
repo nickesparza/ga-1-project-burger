@@ -84,8 +84,6 @@ const gameStateManager = () => {
             constructor(x, y) {
                 this.x = x,
                 this.y = y,
-                this.lastX = x,
-                this.lastY = y,
                 this.speed = 25,
                 this.direction = {
                     up: false,
@@ -101,11 +99,6 @@ const gameStateManager = () => {
                 // variable which becomes true when all ingredients have been added to ingredients array
                 this.scoreable = false,
                 this.render = function () {
-                    // const playerImage = new Image()
-                    // playerImage.src = this.image
-                    // playerImage.onload = () => {
-                    //     ctx.drawImage(playerImage, this.x, this.y)
-                    // }
                     ctx.fillStyle = 'green'
                     ctx.fillRect(this.x, this.y, this.width, this.height)
                 }
@@ -154,29 +147,35 @@ const gameStateManager = () => {
             movePlayer = function () {
                 // move player looks at the direction and sends the object in the true direction
                 if (this.direction.up) {
-                    this.y -= this.speed
-                    this.lastY = this.y - this.speed
+                    if (getTile(this.x + 25, (this.y - 50) !== '1')) {
+                        this.y -= this.speed
+                    } else {
+                        console.log(getTile(this.x + 25, this.y - 50))
+                    }
                     if (this.y <= 0) {
                         this.y = 0
                     }
                 }
                 if (this.direction.left) {
-                    this.lastX = this.x
-                    this.x -= this.speed
+                    if (getTile((this.x - this.speed) + 1, this.y + 25) !== '1') {
+                        this.x -= this.speed
+                      }
                     if (this.x <= 0) {
                         this.x = 0
                     }
                 }
                 if (this.direction.down) {
-                    this.lastY = this.y
-                    this.y += this.speed
+                    if (getTile(this.x + 25, (this.y + 50)) !== '1') {
+                        this.y += this.speed
+                    }
                     if (this.y + this.height >= canvas.height) {
                         this.y = canvas.height - this.height
                     }
                 }
                 if (this.direction.right) {
-                    this.lastX = this.x
-                    this.x += this.speed
+                    if (getTile(((player.x + player.width) + player.speed) - 1, player.y + 25) !== '1') {
+                        this.x += this.speed;
+                      }
                     if (this.x + this.width >= canvas.width) {
                         this.x = canvas.width - this.width
                     }
@@ -194,16 +193,6 @@ const gameStateManager = () => {
                 this.render = function () {
                     ctx.fillStyle = 'gray'
                     ctx.fillRect(this.x, this.y, this.width, this.height)
-                    // const wallImage = new Image()
-                    // wallImage.src = this.image
-                    // wallImage.onload = () => {
-                    //     ctx.drawImage(wallImage, this.x, this.y)
-                    // }
-                }
-            }
-            blockPlayer = function (player) {
-                if (player.x + player.width >= this.x && player.x <= this.x + this.width) {
-                    player.speed = 0
                 }
             }
         }
@@ -280,69 +269,6 @@ const gameStateManager = () => {
                     interactable.checkIngredients()
                 }
             }
-            if (interactable instanceof Wall) {
-                if (player.x + player.width === (interactable.y + interactable.height) + (interactable.width + interactable.height)) {
-                    player.direction.up = false
-                }
-            }
-        }
-        // handler for moving with the keyboard
-        // const movementHandler = (e) => {
-        //     switch (e.keyCode) {
-        //         case (87): // W
-        //         case (38): // up arrow
-        //             // this moves the player up
-        //             player.lastY = player.y
-        //             player.lastX = player.x
-        //             player.y -= 50
-        //             // console.log(`player's last Y position: ${player.lastY}`)
-        //             // console.log(`player's current Y position: ${player.y}`)
-        //             // console.log(`player's current X position: ${player.x}`)
-        //             break
-        //         case (65): // A
-        //         case (37): // left arrow
-        //             // this moves the player left
-        //             player.lastX = player.x
-        //             player.lastY = player.y
-        //             player.x -= 50
-        //             // console.log(`player's last X position: ${player.lastX}`)
-        //             // console.log(`player's current X position: ${player.x}`)
-        //             // console.log(`player's current Y position: ${player.y}`)
-        //             break
-        //         case (83): // S
-        //         case (40): // down arrow
-        //             // this moves the player down
-        //             player.lastY = player.y
-        //             player.lastX = player.x
-        //             player.y += 50
-        //             // console.log(`player's last Y position: ${player.lastY}`)
-        //             // console.log(`player's current Y position: ${player.y}`)
-        //             // console.log(`player's current X position: ${player.x}`)
-        //             break
-        //         case (68): // D
-        //         case (39): // right arrow
-        //             // this moves the player right
-        //             player.lastX = player.x
-        //             player.lastY = player.y
-        //             player.x += 50
-        //             // console.log(`player's last X position: ${player.lastX}`)
-        //             // console.log(`player's current X position: ${player.x}`)
-        //             // console.log(`player's current Y position: ${player.y}`)
-        //             break
-        //     }
-        // }
-        // function to detect edge collision and reset player to in-bounds
-        const detectEdge = () => {
-            if (player.x < 0) {
-                player.x = 0
-            } else if (player.y < 0) {
-                player.y = 0
-            } else if (player.x + player.width > canvas.width) {
-                player.x = canvas.width - player.width
-            } else if (player.y + player.height > canvas.height) {
-                player.y = canvas.height - player.height
-            }
-
         }
         // instantiate a player object
         let player = new Player(50, 50)
@@ -373,8 +299,34 @@ const gameStateManager = () => {
                           1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,2,
                           1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]
         
+        // test array
+        const level = '1101111111111111\n1000011111000001\n1100000010001101\n1100000000000001\n1100101111100011\n1100111111100011\n1100111101000001\n1100000000010011\n1100111000110001\n1000001000000001\n1111111111011111\n1111111111111111'
+
+        function parse(level){
+            const lines = level.split("\n");
+            const characters = lines.map(l => l.split(""));
+            return characters;
+          }
+        
+        let currentLevel = parse(level)
+        
+        function draw(){
+            ctx.fillStyle = "gray";
+            for (let row = 0; row < currentLevel.length; row++) {
+              for (let col = 0; col < currentLevel[0].length; col++) {
+                if (currentLevel[row][col] === "1") {
+                  ctx.fillRect(col * 50, row * 50, 50, 50);
+                }
+              }
+            }
+          }
+        
         // empty array to store all wall objects once they are created
         const wallObj = []
+
+        function getTile(x, y){
+            return(currentLevel[Math.floor(y / 50)][Math.floor(x / 50)]);
+          }
         // function for drawing the map
         const drawMap = () => {
             let mapX = 0
@@ -400,8 +352,7 @@ const gameStateManager = () => {
             })
         }
         // call draw function for map
-        drawMap()
-
+        // drawMap()
         // iterator for rendering the objective burger in the objective window
         const drawObjective = () => {
             let stackPosition = 200
@@ -421,11 +372,12 @@ const gameStateManager = () => {
             // render and collision and scoring functions that push information to DOM elements
             ctx.clearRect(0, 0, canvas.width, canvas.height)
             // then, draw the map
-            wallObj.forEach(wall => {
-                // wall.blockPlayer(player)
-                collisionChecker(wall)
-                wall.render()
-            })
+            draw()
+            // wallObj.forEach(wall => {
+            //     // wall.blockPlayer(player)
+            //     wall.blockPlayer(player)
+            //     wall.render()
+            // })
             // then, detect if the player is outside the bounds of the canvas and reset them if necessary
             // detectEdge()
             // set up handler for interactables to check collision and render
@@ -439,8 +391,6 @@ const gameStateManager = () => {
             player.drawBurger(player.ingredients)
             player.movePlayer()
         }, 60)
-        // listener for key presses
-        // document.addEventListener('keydown', movementHandler)
         // two new event listeners are needed, for keyup and keydown
         document.addEventListener('keydown', (e) => {
             // when the key is down, set the direction to true according to the function
@@ -453,12 +403,11 @@ const gameStateManager = () => {
             if (['w', 'a', 's', 'd'].includes(e.key)) {
                 player.unSetDirection(e.key)
             }
-
+        })
         document.addEventListener('keydown', (e) => {
             if (e.key == 'f') {
                 console.log(`player X ${player.x} player Y ${player.y} player lastX ${player.lastX} player lastY ${player.lastY}`)
             }
-        })
         })
         // includes function to clear interval on play when timer hits zero and start resultsManager
         countDown(timer)
