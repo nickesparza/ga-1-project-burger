@@ -25,7 +25,7 @@ const gameStateManager = () => {
     const scoreUI = document.getElementById('score')
     scoreUI.innerHTML = `${score}`
     // timer
-    let timer = 15
+    let timer = 60
     const timerUI = document.getElementById('timer')
     timerUI.innerHTML = `${timer}`
     const countDown = (timer) => {
@@ -44,7 +44,7 @@ const gameStateManager = () => {
         }, timer * 1000)
     }
     const resetUI = () => {
-        timer = 15
+        timer = 60
         timerUI.innerHTML = `${timer}`
         score = 0
         scoreUI.innerHTML = `${score}`
