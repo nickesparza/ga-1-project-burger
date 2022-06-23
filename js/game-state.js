@@ -25,7 +25,7 @@ const gameStateManager = () => {
     const scoreUI = document.getElementById('score')
     scoreUI.innerHTML = `${score}`
     // timer
-    let timer = 60
+    let timer = 15
     const timerUI = document.getElementById('timer')
     timerUI.innerHTML = `${timer}`
     const countDown = (timer) => {
@@ -33,6 +33,9 @@ const gameStateManager = () => {
         const timerID = setInterval(() => {
             timer -= 1
             timerUI.innerHTML = `${timer}`
+            if (timer <= 10) {
+                timerUI.style.color = 'red'
+            }
         }, 1000)
         setTimeout(() => {
             clearInterval(timerID)
@@ -41,7 +44,7 @@ const gameStateManager = () => {
         }, timer * 1000)
     }
     const resetUI = () => {
-        timer = 60
+        timer = 15
         timerUI.innerHTML = `${timer}`
         score = 0
         scoreUI.innerHTML = `${score}`
@@ -101,6 +104,9 @@ const gameStateManager = () => {
                 this.render = function () {
                     ctx.fillStyle = 'green'
                     ctx.fillRect(this.x, this.y, this.width, this.height)
+                    // playerImage.onload = function () {
+                    //     ctx.drawImage(playerImage, this.x, this.y)
+                    // }
                 }
                 // function to draw burger ingredients in order of acquisition
                 this.drawBurger = function (array) {
@@ -362,7 +368,7 @@ const gameStateManager = () => {
             clearInterval(playID)
             console.log(`playManager interval cleared`)
             ctx.fillStyle = 'white'
-            ctx.fillText(`Round Over!`, 300, 350)
+            ctx.fillText(`Round Over!`, 350, 275)
             setTimeout(resultsManager, 2000)
         }, timer * 1000)
     }
