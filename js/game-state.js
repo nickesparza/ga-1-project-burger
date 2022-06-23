@@ -89,8 +89,15 @@ const gameStateManager = () => {
     // playManager function that runs when triggered from titleManager event listener
     const playManager = () => {
         console.log(`playManager running`)
+        canvas.style.backgroundColor = '#475aa1'
         let playerImage = new Image()
-        playerImage.src = '/imgs/textImage.png'
+        playerImage.src = '/imgs/chef.png'
+        let wallImage = new Image()
+        wallImage.src = '/imgs/kitchen_counter.png'
+        let genImage = new Image()
+        genImage.src = '/imgs/gen_generic.png'
+        let scorImage = new Image()
+        scorImage.src = '/imgs/scorer.png'
         // define player class
         class Player {
             constructor(x, y) {
@@ -105,7 +112,6 @@ const gameStateManager = () => {
                 },
                 this.width = 50,
                 this.height = 50,
-                this.image = '/imgs/textImage.png',
                 // empty starting array to fill with ingredients
                 this.ingredients = [],
                 // variable which becomes true when all ingredients have been added to ingredients array
@@ -114,10 +120,10 @@ const gameStateManager = () => {
             // function to draw burger ingredients in order of acquisition
             drawBurger = function (array) {
                 // set variable for where within player graphicto begin stack
-                let stackPosition = 35
+                let stackPosition = 30
                 // set bottom bun color and draw
                 ctx.fillStyle = 'brown'
-                ctx.fillRect(this.x + 15, this.y + 40, 20, 5)
+                ctx.fillRect(this.x + 15, this.y + stackPosition + 5, 20, 5)
                 // iterate through ingredients array to grab attributes
                 array.forEach(ingredient => {
                     // if this is the first ingredient, draw it at origin
@@ -137,9 +143,9 @@ const gameStateManager = () => {
                 })
             }
             render = function () {
-                // ctx.drawImage(playerImage, this.x, this.y, this.width, this.height)
-                ctx.fillStyle = 'green'
-                ctx.fillRect(this.x, this.y, this.width, this.height)
+                ctx.drawImage(playerImage, this.x, this.y, this.width, this.height)
+                // ctx.fillStyle = 'green'
+                // ctx.fillRect(this.x, this.y, this.width, this.height)
             }
             // add methods to smooth out player movement
             // setDirection unlocks player position
@@ -223,8 +229,7 @@ const gameStateManager = () => {
                 }
             }
             render = function () {
-                ctx.fillStyle = 'rgb(255, 133, 230, .5)'
-                ctx.fillRect(this.x, this.y, this.width, this.height)
+                ctx.drawImage(scorImage, this.x, this.y)
             }
         }
         // define a "generator" class that sits on the grid and gives the player an ingredient
@@ -254,10 +259,9 @@ const gameStateManager = () => {
             }
             // function to render generator on screen
             render = function () {
-                ctx.fillStyle = 'rgb(44, 133, 230, .5)'
-                ctx.fillRect(this.x, this.y, this.width, this.height)
+                ctx.drawImage(genImage, this.x, this.y)
                 ctx.fillStyle = this.color
-                ctx.fillRect(this.x + 15, this.y + 25, 20, 5)
+                ctx.fillRect(this.x + 15, this.y + 15, 20, 5)
             }
         }
         // checker function for giving player an ingredient
@@ -307,7 +311,7 @@ const gameStateManager = () => {
             for (let row = 0; row < mapArray.length; row++) {
               for (let col = 0; col < mapArray[0].length; col++) {
                 if (mapArray[row][col] === 1) {
-                  ctx.fillRect(col * 50, row * 50, 50, 50);
+                  ctx.drawImage(wallImage, col * 50, row * 50);
                 }
               }
             }
