@@ -356,11 +356,6 @@ const gameStateManager = () => {
                 player.unSetDirection(e.key)
             }
         })
-        document.addEventListener('keydown', (e) => {
-            if (e.key == 'f') {
-                console.log(`player X ${player.x} player Y ${player.y} player lastX ${player.lastX} player lastY ${player.lastY}`)
-            }
-        })
         // includes function to clear interval on play when timer hits zero and start resultsManager
         countDown(timer)
         setTimeout(() => {
