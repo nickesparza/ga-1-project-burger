@@ -17,17 +17,19 @@ objectiveWindow.setAttribute('height', getComputedStyle(objectiveWindow)['height
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// gameStateManager that runs when DOM loads
+// gameStateManager that runs when DOM loads that loads titleManager first
 const gameStateManager = () => {
     // scope variables
     // score
     let score = 0
+    // push score to DOM
     const scoreUI = document.getElementById('score')
     scoreUI.innerHTML = `${score}`
     // timer
     let timer = 60
     const timerUI = document.getElementById('timer')
     timerUI.innerHTML = `${timer}`
+    // countdown function that begins when the player hits a key from the titleManager
     const countDown = (timer) => {
         timerUI.innerHTML = `${timer}`
         const timerID = setInterval(() => {
@@ -43,6 +45,7 @@ const gameStateManager = () => {
             return timer
         }, timer * 1000)
     }
+    // function to reset the timer and score when the player returns from the resultsManager to titleManager
     const resetUI = () => {
         timer = 60
         timerUI.innerHTML = `${timer}`
@@ -68,7 +71,8 @@ const gameStateManager = () => {
             ctx.fillText('Burger Rush: Press any key to begin', 50, 100)
             ctx.font = '24px Helvetica'
             ctx.fillText('Move with WASD or arrow keys', 50, 325)
-            ctx.fillText('Collect all the ingredients and deliver them to the service window', 50, 375)
+            ctx.fillText('Collect all the ingredients (blue)', 50, 375)
+            ctx.fillText('and deliver them to the service window (purple)', 50, 400)
         }, 60)
         // includes listener for W keypress that ends interval using return from setInterval and starts playManager
         document.addEventListener('keydown', function () {
@@ -123,7 +127,7 @@ const gameStateManager = () => {
                             ctx.fillRect(this.x + 15, this.y + stackPosition, 20, 5)
                             stackPosition -= 5
                         } else {
-                        // I may not need this, will test later
+                        // if it's not the first ingredient, draw it above the previous ingredient
                             ctx.fillStyle = ingredient.color
                             ctx.fillRect(this.x + 15, this.y + stackPosition, 20, 5)
                             stackPosition -= 5
@@ -267,20 +271,21 @@ const gameStateManager = () => {
 
         // instantiate generator objects
         let tomato = new Generator(400, 300, 'tomato', 'red')
-        let cheese = new Generator(250, 200, 'cheese', '#fcba03')
+        let cheese = new Generator(250, 200, 'cheese', '#f5df1b')
         let lettuce = new Generator(50, 450, 'lettuce', '#18db18')
-        let mustard = new Generator(700, 300, 'mustard', '#e8f00e')
+        let onion = new Generator(700, 300, 'onion', 'white')
         let patty = new Generator(500, 500, 'patty', '#633313')
+        let pickles = new Generator(650, 50, 'pickles', '#38f51b')
         let scorer = new Scorer(50, 50)
 
         // arrays for checking ingredients and interactables
-        const ingArray = [patty, cheese, lettuce, tomato, mustard]
-        const interactables = [tomato, cheese, lettuce, mustard, patty, scorer]
+        const ingArray = [patty, cheese, lettuce, tomato, onion, pickles]
+        const interactables = [tomato, cheese, lettuce, onion, patty, pickles, scorer]
 
         // two-dimensional array to determine where to draw walls
         const mapArray = [
             [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
-            [1,0,0,0,0,1,1,1,1,1,0,0,0,0,0,1],
+            [1,0,0,0,0,1,1,1,1,1,0,0,0,0,1,1],
             [1,1,0,0,0,0,0,0,1,0,0,0,1,1,0,1],
             [1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
             [1,1,0,0,1,0,1,1,1,1,1,0,0,0,1,1],
@@ -304,26 +309,28 @@ const gameStateManager = () => {
             }
           }
 
-        function getTile(x, y){
+        function getTile(x, y) {
             return(mapArray[Math.floor(y / 50)][Math.floor(x / 50)]);
-          }
+        }
 
-        // call draw function for map
-        // drawMap()
-        // iterator for rendering the objective burger in the objective window
+        // function for rendering the objective burger in the objective window
         const drawObjective = () => {
             ctxTarget.clearRect(0, 0, objectiveWindow.width, objectiveWindow.height)
             let stackPosition = 200
-            ctxTarget.fillStyle = "brown"
-            ctxTarget.fillRect(30, 225, 120, 20)
-            ctxTarget.fillRect(30, 75, 120, 20)
+            // iterates over elements in the ingredients array to avoid including things that aren't ingredients
             ingArray.forEach(ingredient => {
                 ctxTarget.fillStyle = ingredient.color
                 ctxTarget.fillRect(30, stackPosition, 120, 20)
                 stackPosition -= 25
             })
+            ctxTarget.fillStyle = "#c98224"
+            ctxTarget.fillRect(30, 225, 120, 20)
+            ctxTarget.fillRect(30, stackPosition, 120, 20)
         }
+        // since the objective doesn't currently change, can call it once when playManager begins and then leave it
         drawObjective()
+
+        // function to flash the objective window for correct or incorrect combinations
         const correctOrIncorrect = (color) => {
             const window = document.getElementById('objective')
             window.style.backgroundColor = color
@@ -332,6 +339,8 @@ const gameStateManager = () => {
             setTimeout(drawObjective, 500)
             setTimeout(() => { window.style.backgroundColor = 'black' }, 500)
         }
+/////////////////////////////////////////GAME LOOP BELOW//////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // setInterval for anonymous play manager function that is saved to a variable and starts immediately
         const playID = setInterval(() => {
         // const playID = requestAnimationFrame(() => {
@@ -350,6 +359,8 @@ const gameStateManager = () => {
             player.drawBurger(player.ingredients)
             player.movePlayer()
         }, 60)
+/////////////////////////////////////////END GAME LOOP////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // two new event listeners are needed, for keyup and keydown
         document.addEventListener('keydown', (e) => {
             // when the key is down, set the direction to true according to the function
