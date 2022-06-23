@@ -122,11 +122,7 @@ const gameStateManager = () => {
                 // set variable for where within player graphicto begin stack
                 let stackPosition = 30
                 // set bottom bun color and draw
-<<<<<<< HEAD
                 ctx.fillStyle = '#c98224'
-=======
-                ctx.fillStyle = 'brown'
->>>>>>> main
                 ctx.fillRect(this.x + 15, this.y + stackPosition + 5, 20, 5)
                 // iterate through ingredients array to grab attributes
                 array.forEach(ingredient => {
