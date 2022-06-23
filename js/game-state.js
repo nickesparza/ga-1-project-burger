@@ -25,7 +25,7 @@ const gameStateManager = () => {
     const scoreUI = document.getElementById('score')
     scoreUI.innerHTML = `${score}`
     // timer
-    let timer = 999
+    let timer = 60
     const timerUI = document.getElementById('timer')
     timerUI.innerHTML = `${timer}`
     const countDown = (timer) => {
@@ -41,7 +41,7 @@ const gameStateManager = () => {
         }, timer * 1000)
     }
     const resetUI = () => {
-        timer = 999
+        timer = 60
         timerUI.innerHTML = `${timer}`
         score = 0
         scoreUI.innerHTML = `${score}`
@@ -180,20 +180,6 @@ const gameStateManager = () => {
                 }
             }
         }
-        // define class for generic wall object that player cannot move through
-        class Wall {
-            constructor(x, y, width, height) {
-                this.x = x,
-                this.y = y,
-                this.width = width,
-                this.height = height,
-                this.image = 'imgs/textImage.png',
-                this.render = function () {
-                    ctx.fillStyle = 'gray'
-                    ctx.fillRect(this.x, this.y, this.width, this.height)
-                }
-            }
-        }
         // define "scorer" class that checks if the player has all ingredients and increments score
         class Scorer {
             constructor(x, y) {
@@ -205,8 +191,9 @@ const gameStateManager = () => {
                 this.checkIngredients = function () {
                     // if player has all ingredients, delete ingredients and increment score
                     if (player.scoreable === true) {
+                        correctOrIncorrect('#09e030')
                         player.scoreable = false
-                        score += 10
+                        score += 100
                         successOrders += 1
                         player.ingredients.length = 0
                         scoreUI.innerHTML = `${score}`
@@ -214,6 +201,7 @@ const gameStateManager = () => {
                         console.log(`You scored a point`)
                     // if they don't, delete ingredients and display error message
                     } else if (player.ingredients.length > 0 && player.ingredients.length < ingArray.length) {
+                        correctOrIncorrect('red')
                         player.ingredients.length = 0
                         failedOrders += 1
                         console.log(`You screwed up! Not all ingredients were added`)
@@ -318,6 +306,7 @@ const gameStateManager = () => {
         // drawMap()
         // iterator for rendering the objective burger in the objective window
         const drawObjective = () => {
+            ctxTarget.clearRect(0, 0, objectiveWindow.width, objectiveWindow.height)
             let stackPosition = 200
             ctxTarget.fillStyle = "brown"
             ctxTarget.fillRect(30, 225, 120, 20)
@@ -329,6 +318,14 @@ const gameStateManager = () => {
             })
         }
         drawObjective()
+        const correctOrIncorrect = (color) => {
+            const window = document.getElementById('objective')
+            window.style.backgroundColor = color
+            ctxTarget.fillStyle = color
+            ctxTarget.fillRect(0, 0, 180, 280)
+            setTimeout(drawObjective, 500)
+            setTimeout(() => { window.style.backgroundColor = 'black' }, 500)
+        }
         // setInterval for anonymous play manager function that is saved to a variable and starts immediately
         const playID = setInterval(() => {
         // const playID = requestAnimationFrame(() => {
