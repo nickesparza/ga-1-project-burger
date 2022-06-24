@@ -113,6 +113,7 @@ const gameStateManager = () => {
     // titleManager function that starts interval when game state runs
     const titleManager = () => {
         console.log(`titleManager running`)
+        ctxTarget.clearRect(0, 0, objectiveWindow.width, objectiveWindow.height)
         // setInterval for anonymous title manager that is saved to a variable and starts immediately
         const titleID = setInterval(() => {
             // render functions for title screen, animated elements?
