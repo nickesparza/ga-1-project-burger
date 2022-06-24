@@ -63,6 +63,8 @@ const gameStateManager = () => {
         uiGameOver.src = 'imgs/gameOver.png'
         let titleScreen = new Image()
         titleScreen.src = 'imgs/title_screen.png'
+        let resultsScreen = new Image()
+        resultsScreen.src = 'imgs/results_screen.png'
         //////////////////////////////////////////
         //////////end of asset list///////////////
     // score
@@ -113,15 +115,6 @@ const gameStateManager = () => {
         const titleID = setInterval(() => {
             // render functions for title screen, animated elements?
             ctx.clearRect(0, 0, canvas.width, canvas.height)
-            // text style for context
-            ctx.font = '32px Helvetica'
-            ctx.fillStyle = 'white'
-            // UI messages and instructions
-            // ctx.fillText('Burger Rush: Press any key to begin', 50, 100)
-            // ctx.font = '24px Helvetica'
-            // ctx.fillText('Move with WASD or arrow keys', 50, 325)
-            // ctx.fillText('Collect all the ingredients (blue)', 50, 375)
-            // ctx.fillText('and deliver them to the service window (purple)', 50, 400)
             ctx.drawImage(titleScreen, 0, 0)
         }, 60)
         // includes listener for keypress that ends interval using return from setInterval and starts playManager
@@ -442,12 +435,15 @@ const gameStateManager = () => {
         const resultsID = setInterval(() => {
             // renders score screen, successes, and failures
             ctx.clearRect(0, 0, canvas.width, canvas.height)
+            // text style for context
+            ctx.font = '54px Helvetica'
             ctx.fillStyle = 'white'
-            ctx.fillText('Round Over', 175, 180)
-            ctx.fillText(`Your Score: ${score}`, 175, 225)
-            ctx.fillText(`Successful Orders: ${successOrders}`, 175, 325)
-            ctx.fillText(`Failed Orders: ${failedOrders}`, 175, 450)
-            ctx.fillText(`Press any key to return to title`, 175, 500)
+            // ctx.fillText('Round Over', 175, 180)
+            // ctx.fillText(`Press any key to return to title`, 175, 500)
+            ctx.drawImage(resultsScreen, 0, 0)
+            ctx.fillText(`${successOrders}`, 410, 375)
+            ctx.fillText(`${failedOrders}`, 410, 430)
+            ctx.fillText(`${score}`, 410, 500)
         }, 60)
         // includes event listener for W keypress that ends interval using return from setInterval and starts titleManager again
         document.addEventListener('keydown', function () {
