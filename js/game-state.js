@@ -119,7 +119,7 @@ const gameStateManager = () => {
             ctx.clearRect(0, 0, canvas.width, canvas.height)
             ctx.drawImage(titleScreen, 0, 0)
         }, 60)
-        // includes listener for keypress that ends interval using return from setInterval and starts playManager
+        // includes listener for keypress that ends interval using return from titleID and starts playManager
         document.addEventListener('keydown', function () {
             clearInterval(titleID)
             console.log(`titleManager interval cleared`)
@@ -155,7 +155,6 @@ const gameStateManager = () => {
                 // set variable for where within player graphicto begin stack
                 let stackPosition = 30
                 // set bottom bun color and draw
-                // ctx.fillStyle = '#c98224'
                 ctx.drawImage(bunBot, this.x + 12, this.y + stackPosition, 25, 10)
                 // iterate through ingredients array to grab attributes
                 array.forEach(ingredient => {
@@ -172,14 +171,10 @@ const gameStateManager = () => {
                     }
                 })
                 // draw top bun that stays on top of burger stack
-                // ctx.fillStyle = '#c98224'
-                // ctx.fillRect(this.x + 15, this.y + stackPosition, 20, 5)
                 ctx.drawImage(bunTop, this.x + 12, this.y + stackPosition - 5, 25, 10)
             }
             render = function () {
                 ctx.drawImage(playerImage, this.x, this.y, this.width, this.height)
-                // ctx.fillStyle = 'green'
-                // ctx.fillRect(this.x, this.y, this.width, this.height)
             }
             // add methods to smooth out player movement
             // setDirection unlocks player position
@@ -341,18 +336,18 @@ const gameStateManager = () => {
             [1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1],
             [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]
         ]
-        
-        function drawMap(){
-            // ctx.fillStyle = "gray";
-            for (let row = 0; row < mapArray.length; row++) {
-              for (let col = 0; col < mapArray[0].length; col++) {
-                if (mapArray[row][col] === 1) {
-                  ctx.drawImage(wallImage, col * 50, row * 50);
-                }
-              }
-            }
-          }
 
+        // function to draw the map based on the 2D level array
+        function drawMap(){
+            for (let row = 0; row < mapArray.length; row++) {
+                for (let col = 0; col < mapArray[0].length; col++) {
+                    if (mapArray[row][col] === 1) {
+                    ctx.drawImage(wallImage, col * 50, row * 50);
+                    }
+                }
+            }
+        }
+        // function for checking player movement against the 2D map
         function getTile(x, y) {
             return(mapArray[Math.floor(y / 50)][Math.floor(x / 50)]);
         }
@@ -367,11 +362,10 @@ const gameStateManager = () => {
                 ctxTarget.drawImage(ingredient.stackRef, 30, stackPosition, 120, 20)
                 stackPosition -= 25
             })
-            // ctxTarget.fillStyle = "#c98224"
-            // ctxTarget.fillRect(30, 225, 120, 20)
             ctxTarget.drawImage(bunBot, 30, 225)
             ctxTarget.drawImage(bunTop, 30, stackPosition)
         }
+
         // since the objective doesn't currently change, can call it once when playManager begins and then leave it
         drawObjective()
 
@@ -393,7 +387,7 @@ const gameStateManager = () => {
             ctx.clearRect(0, 0, canvas.width, canvas.height)
             // then, draw the map
             drawMap()
-            // set up handler for interactables to check collision and render
+            // check interactables for collision and render
             interactables.forEach(interactable => {
                 collisionChecker(interactable)
                 interactable.render()
@@ -406,7 +400,7 @@ const gameStateManager = () => {
         }, 60)
 /////////////////////////////////////////END GAME LOOP///////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        // two new event listeners are needed, for keyup and keydown
+        // two event listeners for keyup and keydown
         document.addEventListener('keydown', (e) => {
             // when the key is down, set the direction to true according to the function
             player.setDirection(e.key)
@@ -418,7 +412,7 @@ const gameStateManager = () => {
                 player.unSetDirection(e.key)
             }
         })
-        // includes function to clear interval on play when timer hits zero and start resultsManager
+        // includes function to clear interval when timer hits zero and start resultsManager
         countDown(timer)
         setTimeout(() => {
             clearInterval(playID)
@@ -430,7 +424,7 @@ const gameStateManager = () => {
     }
 ///////////////////////////////////////////////RESULTS SCREEN MANAGER////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    // resultsManager function that runs when triggered from endGame function inside of playManager
+    // resultsManager function that runs when triggered from timer function inside of playManager
     const resultsManager = () => {
         console.log(`resultsManager running`)
         // setInterval for anonymous results manager function that is saved to a variable and starts immediately
@@ -447,7 +441,7 @@ const gameStateManager = () => {
             ctx.fillText(`${failedOrders}`, 410, 430)
             ctx.fillText(`${score}`, 410, 500)
         }, 60)
-        // includes event listener for W keypress that ends interval using return from setInterval and starts titleManager again
+        // includes event listener for keypress that ends interval using return from resultsID and starts titleManager again
         document.addEventListener('keydown', function () {
             clearInterval(resultsID)
             console.log(`resultsManager interval cleared`)
