@@ -61,6 +61,8 @@ const gameStateManager = () => {
         bunTop.src = 'imgs/bun_top.png'
         let uiGameOver = new Image()
         uiGameOver.src = 'imgs/gameOver.png'
+        let titleScreen = new Image()
+        titleScreen.src = 'imgs/title_screen.png'
         //////////////////////////////////////////
         //////////end of asset list///////////////
     // score
@@ -69,7 +71,7 @@ const gameStateManager = () => {
     const scoreUI = document.getElementById('score')
     scoreUI.innerHTML = `${score}`
     // timer
-    let timer = 10
+    let timer = 60
     const timerUI = document.getElementById('timer')
     timerUI.innerHTML = `${timer}`
     // countdown function that begins when the player hits a key from the titleManager
@@ -92,7 +94,7 @@ const gameStateManager = () => {
     }
     // function to reset the timer and score when the player returns from the resultsManager to titleManager
     const resetUI = () => {
-        timer = 10
+        timer = 60
         timerUI.style.color = 'white'
         timerUI.innerHTML = `${timer}`
         score = 0
@@ -115,11 +117,12 @@ const gameStateManager = () => {
             ctx.font = '32px Helvetica'
             ctx.fillStyle = 'white'
             // UI messages and instructions
-            ctx.fillText('Burger Rush: Press any key to begin', 50, 100)
-            ctx.font = '24px Helvetica'
-            ctx.fillText('Move with WASD or arrow keys', 50, 325)
-            ctx.fillText('Collect all the ingredients (blue)', 50, 375)
-            ctx.fillText('and deliver them to the service window (purple)', 50, 400)
+            // ctx.fillText('Burger Rush: Press any key to begin', 50, 100)
+            // ctx.font = '24px Helvetica'
+            // ctx.fillText('Move with WASD or arrow keys', 50, 325)
+            // ctx.fillText('Collect all the ingredients (blue)', 50, 375)
+            // ctx.fillText('and deliver them to the service window (purple)', 50, 400)
+            ctx.drawImage(titleScreen, 0, 0)
         }, 60)
         // includes listener for keypress that ends interval using return from setInterval and starts playManager
         document.addEventListener('keydown', function () {
