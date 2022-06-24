@@ -20,6 +20,47 @@ objectiveWindow.setAttribute('height', getComputedStyle(objectiveWindow)['height
 // gameStateManager that runs when DOM loads that loads titleManager first
 const gameStateManager = () => {
     // scope variables
+    // declaring image objects for the game art
+        ///////////////////////////////////////////
+        canvas.style.backgroundColor = '#475aa1'
+        let playerImage = new Image()
+        playerImage.src = 'imgs/chef.png'
+        let wallImage = new Image()
+        wallImage.src = 'imgs/kitchen_counter.png'
+        let genImage = new Image()
+        genImage.src = 'imgs/gen_generic.png'
+        let scorImage = new Image()
+        scorImage.src = 'imgs/scorer.png'
+        let ingTomato = new Image()
+        ingTomato.src = 'imgs/ing_tomato.png'
+        let ingCheese = new Image()
+        ingCheese.src = 'imgs/ing_cheese.png'
+        let ingBurg = new Image()
+        ingBurg.src = 'imgs/ing_burgpatty.png'
+        let ingOnion = new Image()
+        ingOnion.src = 'imgs/ing_onion.png'
+        let ingPickles = new Image()
+        ingPickles.src = 'imgs/ing_pickles.png'
+        let ingLettuce = new Image()
+        ingLettuce.src = 'imgs/ing_lettuce.png'
+        let stackTomato = new Image()
+        stackTomato.src = 'imgs/stack_tomato.png'
+        let stackCheese = new Image()
+        stackCheese.src = 'imgs/stack_cheese.png'
+        let stackBurg = new Image()
+        stackBurg.src = 'imgs/stack_burg.png'
+        let stackLettuce = new Image()
+        stackLettuce.src = 'imgs/stack_lettuce.png'
+        let stackOnion = new Image()
+        stackOnion.src = 'imgs/stack_onion.png'
+        let stackPickles = new Image()
+        stackPickles.src = 'imgs/stack_pickles.png'
+        let bunBot = new Image()
+        bunBot.src = 'imgs/bun_bot.png'
+        let bunTop = new Image()
+        bunTop.src = 'imgs/bun_top.png'
+        //////////////////////////////////////////
+        //////////end of asset list///////////////
     // score
     let score = 0
     // push score to DOM
@@ -89,32 +130,7 @@ const gameStateManager = () => {
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // playManager function that runs when triggered from titleManager event listener
     const playManager = () => {
-        // declaring image objects for the game art
-        ///////////////////////////////////////////
         console.log(`playManager running`)
-        canvas.style.backgroundColor = '#475aa1'
-        let playerImage = new Image()
-        playerImage.src = 'imgs/chef.png'
-        let wallImage = new Image()
-        wallImage.src = 'imgs/kitchen_counter.png'
-        let genImage = new Image()
-        genImage.src = 'imgs/gen_generic.png'
-        let scorImage = new Image()
-        scorImage.src = 'imgs/scorer.png'
-        let ingTomato = new Image()
-        ingTomato.src = 'imgs/ing_tomato.png'
-        let ingCheese = new Image()
-        ingCheese.src = 'imgs/ing_cheese.png'
-        let ingBurg = new Image()
-        ingBurg.src = 'imgs/ing_burgpatty.png'
-        let ingOnion = new Image()
-        ingOnion.src = 'imgs/ing_onion.png'
-        let ingPickles = new Image()
-        ingPickles.src = 'imgs/ing_pickles.png'
-        let ingLettuce = new Image()
-        ingLettuce.src = 'imgs/ing_lettuce.png'
-        //////////////////////////////////////////
-        //////////end of asset list///////////////
         // define player class
         class Player {
             constructor(x, y) {
@@ -139,8 +155,8 @@ const gameStateManager = () => {
                 // set variable for where within player graphicto begin stack
                 let stackPosition = 30
                 // set bottom bun color and draw
-                ctx.fillStyle = '#c98224'
-                ctx.fillRect(this.x + 15, this.y + stackPosition + 5, 20, 5)
+                // ctx.fillStyle = '#c98224'
+                ctx.drawImage(bunBot, this.x + 12, this.y + stackPosition, 25, 10)
                 // iterate through ingredients array to grab attributes
                 array.forEach(ingredient => {
                     // if this is the first ingredient, draw it at origin
@@ -154,10 +170,11 @@ const gameStateManager = () => {
                         ctx.fillRect(this.x + 15, this.y + stackPosition, 20, 5)
                         stackPosition -= 5
                     }
-                // draw top bun that stays on top of burger stack
-                ctx.fillStyle = '#c98224'
-                ctx.fillRect(this.x + 15, this.y + stackPosition, 20, 5)
                 })
+                // draw top bun that stays on top of burger stack
+                // ctx.fillStyle = '#c98224'
+                // ctx.fillRect(this.x + 15, this.y + stackPosition, 20, 5)
+                ctx.drawImage(bunTop, this.x + 12, this.y + stackPosition - 5, 25, 10)
             }
             render = function () {
                 ctx.drawImage(playerImage, this.x, this.y, this.width, this.height)
@@ -251,15 +268,16 @@ const gameStateManager = () => {
         }
         // define a "generator" class that sits on the grid and gives the player an ingredient
         class Generator {
-            constructor(x, y, ingredient, color, image) {
+            constructor(x, y, ingredient, stackRef, image, color) {
                 this.x = x,
                 this.y = y,
                 this.width = 50,
                 this.height = 50,
                 // attribute that determines what ingredient the generator gives
                 this.ingredient = ingredient,
-                this.color = color,
-                this.image = image                
+                this.stackRef = stackRef,
+                this.image = image,
+                this.color = color             
             }
             // function to give ingredients
             giveIngredient = function () {
@@ -296,12 +314,12 @@ const gameStateManager = () => {
         let player = new Player(150, 100)
 
         // instantiate generator objects
-        let tomato = new Generator(400, 300, 'tomato', 'red', ingTomato)
-        let cheese = new Generator(250, 200, 'cheese', '#f5df1b', ingCheese)
-        let lettuce = new Generator(50, 450, 'lettuce', '#18db18', ingLettuce)
-        let onion = new Generator(700, 300, 'onion', 'white', ingOnion)
-        let patty = new Generator(500, 500, 'patty', '#633313', ingBurg)
-        let pickles = new Generator(650, 50, 'pickles', '#38f51b', ingPickles)
+        let tomato = new Generator(400, 300, 'tomato', stackTomato, ingTomato, 'red')
+        let cheese = new Generator(250, 200, 'cheese', stackCheese, ingCheese, 'yellow')
+        let lettuce = new Generator(50, 450, 'lettuce', stackLettuce, ingLettuce, 'green')
+        let onion = new Generator(700, 300, 'onion', stackOnion, ingOnion, 'white')
+        let patty = new Generator(500, 500, 'patty', stackBurg, ingBurg, 'brown')
+        let pickles = new Generator(650, 50, 'pickles', stackPickles, ingPickles, 'green')
         let scorer = new Scorer(50, 50)
 
         // arrays for checking ingredients and interactables
@@ -325,7 +343,7 @@ const gameStateManager = () => {
         ]
         
         function drawMap(){
-            ctx.fillStyle = "gray";
+            // ctx.fillStyle = "gray";
             for (let row = 0; row < mapArray.length; row++) {
               for (let col = 0; col < mapArray[0].length; col++) {
                 if (mapArray[row][col] === 1) {
@@ -345,13 +363,14 @@ const gameStateManager = () => {
             let stackPosition = 200
             // iterates over elements in the ingredients array to avoid including things that aren't ingredients
             ingArray.forEach(ingredient => {
-                ctxTarget.fillStyle = ingredient.color
-                ctxTarget.fillRect(30, stackPosition, 120, 20)
+                // ctxTarget.fillStyle = ingredient.color
+                ctxTarget.drawImage(ingredient.stackRef, 30, stackPosition, 120, 20)
                 stackPosition -= 25
             })
-            ctxTarget.fillStyle = "#c98224"
-            ctxTarget.fillRect(30, 225, 120, 20)
-            ctxTarget.fillRect(30, stackPosition, 120, 20)
+            // ctxTarget.fillStyle = "#c98224"
+            // ctxTarget.fillRect(30, 225, 120, 20)
+            ctxTarget.drawImage(bunBot, 30, 225)
+            ctxTarget.drawImage(bunTop, 30, stackPosition)
         }
         // since the objective doesn't currently change, can call it once when playManager begins and then leave it
         drawObjective()
