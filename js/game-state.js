@@ -59,6 +59,8 @@ const gameStateManager = () => {
         bunBot.src = 'imgs/bun_bot.png'
         let bunTop = new Image()
         bunTop.src = 'imgs/bun_top.png'
+        let uiGameOver = new Image()
+        uiGameOver.src = 'imgs/gameOver.png'
         //////////////////////////////////////////
         //////////end of asset list///////////////
     // score
@@ -67,7 +69,7 @@ const gameStateManager = () => {
     const scoreUI = document.getElementById('score')
     scoreUI.innerHTML = `${score}`
     // timer
-    let timer = 60
+    let timer = 10
     const timerUI = document.getElementById('timer')
     timerUI.innerHTML = `${timer}`
     // countdown function that begins when the player hits a key from the titleManager
@@ -90,7 +92,7 @@ const gameStateManager = () => {
     }
     // function to reset the timer and score when the player returns from the resultsManager to titleManager
     const resetUI = () => {
-        timer = 60
+        timer = 10
         timerUI.style.color = 'white'
         timerUI.innerHTML = `${timer}`
         score = 0
@@ -316,7 +318,7 @@ const gameStateManager = () => {
         // instantiate generator objects
         let tomato = new Generator(400, 300, 'tomato', stackTomato, ingTomato, 'red')
         let cheese = new Generator(250, 200, 'cheese', stackCheese, ingCheese, 'yellow')
-        let lettuce = new Generator(50, 450, 'lettuce', stackLettuce, ingLettuce, 'green')
+        let lettuce = new Generator(50, 450, 'lettuce', stackLettuce, ingLettuce, '#5eff00')
         let onion = new Generator(700, 300, 'onion', stackOnion, ingOnion, 'white')
         let patty = new Generator(500, 500, 'patty', stackBurg, ingBurg, 'brown')
         let pickles = new Generator(650, 50, 'pickles', stackPickles, ingPickles, 'green')
@@ -424,7 +426,7 @@ const gameStateManager = () => {
             clearInterval(playID)
             console.log(`playManager interval cleared`)
             ctx.fillStyle = 'white'
-            ctx.fillText(`Round Over!`, 350, 275)
+            ctx.drawImage(uiGameOver, 150, 100)
             setTimeout(resultsManager, 2000)
         }, timer * 1000)
     }
