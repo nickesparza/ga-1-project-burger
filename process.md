@@ -20,3 +20,6 @@ More collision. This is taking a frustrating amount of time. I did finally find 
 
 Thursday 6/23
 Woke up and suddenly understood how the collision detection worked, so I implemented that FINALLY. Images were broken and flickering but with a little experimentation I got those working as well by declaring the new objects outside of the render loop. Added my first round of artwork to the game and now all that's left is to pretty up the rest of it!
+
+Friday 6/24
+I created all the artwork and started adding it to the game. I wound up having to move the image variable declarations out of the playManager and into the gameManager scope to ensure they were loading in time. Images sure are slow! A few more bug fixes, including resetting successful/failed orders, and I'm calling the MVP of Burger Rush complete. Over the weekend I'm going to try and mess around with randomizing burger ingredients, as well as maybe adding some music.
