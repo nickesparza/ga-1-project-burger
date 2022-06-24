@@ -101,6 +101,8 @@ const gameStateManager = () => {
         timerUI.innerHTML = `${timer}`
         score = 0
         scoreUI.innerHTML = `${score}`
+        successOrders = 0
+        failedOrders = 0
     }
     // successful orders
     let successOrders = 0
