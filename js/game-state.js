@@ -89,6 +89,8 @@ const gameStateManager = () => {
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // playManager function that runs when triggered from titleManager event listener
     const playManager = () => {
+        // declaring image objects for the game art
+        ///////////////////////////////////////////
         console.log(`playManager running`)
         canvas.style.backgroundColor = '#475aa1'
         let playerImage = new Image()
@@ -99,6 +101,20 @@ const gameStateManager = () => {
         genImage.src = 'imgs/gen_generic.png'
         let scorImage = new Image()
         scorImage.src = 'imgs/scorer.png'
+        let ingTomato = new Image()
+        ingTomato.src = 'imgs/ing_tomato.png'
+        let ingCheese = new Image()
+        ingCheese.src = 'imgs/ing_cheese.png'
+        let ingBurg = new Image()
+        ingBurg.src = 'imgs/ing_burgpatty.png'
+        let ingOnion = new Image()
+        ingOnion.src = 'imgs/ing_onion.png'
+        let ingPickles = new Image()
+        ingPickles.src = 'imgs/ing_pickles.png'
+        let ingLettuce = new Image()
+        ingLettuce.src = 'imgs/ing_lettuce.png'
+        //////////////////////////////////////////
+        //////////end of asset list///////////////
         // define player class
         class Player {
             constructor(x, y) {
@@ -235,14 +251,15 @@ const gameStateManager = () => {
         }
         // define a "generator" class that sits on the grid and gives the player an ingredient
         class Generator {
-            constructor(x, y, ingredient, color) {
+            constructor(x, y, ingredient, color, image) {
                 this.x = x,
                 this.y = y,
                 this.width = 50,
                 this.height = 50,
                 // attribute that determines what ingredient the generator gives
                 this.ingredient = ingredient,
-                this.color = color                
+                this.color = color,
+                this.image = image                
             }
             // function to give ingredients
             giveIngredient = function () {
@@ -262,7 +279,7 @@ const gameStateManager = () => {
             render = function () {
                 ctx.drawImage(genImage, this.x, this.y)
                 ctx.fillStyle = this.color
-                ctx.fillRect(this.x + 15, this.y + 15, 20, 5)
+                ctx.drawImage(this.image, this.x, this.y)
             }
         }
         // checker function for giving player an ingredient
@@ -279,12 +296,12 @@ const gameStateManager = () => {
         let player = new Player(150, 100)
 
         // instantiate generator objects
-        let tomato = new Generator(400, 300, 'tomato', 'red')
-        let cheese = new Generator(250, 200, 'cheese', '#f5df1b')
-        let lettuce = new Generator(50, 450, 'lettuce', '#18db18')
-        let onion = new Generator(700, 300, 'onion', 'white')
-        let patty = new Generator(500, 500, 'patty', '#633313')
-        let pickles = new Generator(650, 50, 'pickles', '#38f51b')
+        let tomato = new Generator(400, 300, 'tomato', 'red', ingTomato)
+        let cheese = new Generator(250, 200, 'cheese', '#f5df1b', ingCheese)
+        let lettuce = new Generator(50, 450, 'lettuce', '#18db18', ingLettuce)
+        let onion = new Generator(700, 300, 'onion', 'white', ingOnion)
+        let patty = new Generator(500, 500, 'patty', '#633313', ingBurg)
+        let pickles = new Generator(650, 50, 'pickles', '#38f51b', ingPickles)
         let scorer = new Scorer(50, 50)
 
         // arrays for checking ingredients and interactables
