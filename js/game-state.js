@@ -50,6 +50,7 @@ const gameStateManager = () => {
     // function to reset the timer and score when the player returns from the resultsManager to titleManager
     const resetUI = () => {
         timer = 60
+        timerUI.style.color = 'white'
         timerUI.innerHTML = `${timer}`
         score = 0
         scoreUI.innerHTML = `${score}`
