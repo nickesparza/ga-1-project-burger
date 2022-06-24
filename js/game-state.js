@@ -91,13 +91,13 @@ const gameStateManager = () => {
         console.log(`playManager running`)
         canvas.style.backgroundColor = '#475aa1'
         let playerImage = new Image()
-        playerImage.src = '/imgs/chef.png'
+        playerImage.src = 'imgs/chef.png'
         let wallImage = new Image()
-        wallImage.src = '/imgs/kitchen_counter.png'
+        wallImage.src = 'imgs/kitchen_counter.png'
         let genImage = new Image()
-        genImage.src = '/imgs/gen_generic.png'
+        genImage.src = 'imgs/gen_generic.png'
         let scorImage = new Image()
-        scorImage.src = '/imgs/scorer.png'
+        scorImage.src = 'imgs/scorer.png'
         // define player class
         class Player {
             constructor(x, y) {
