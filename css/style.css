@@ -1,7 +1,11 @@
 body {
-    background-color: gray;
+    background-color: black;
     display: flex;
+    flex-direction: column;
+    align-items: center;
     justify-content: center;
+    font-family: Helvetica, sans-serif;
+    color: white
 }
 
 #canvas {
@@ -55,6 +59,7 @@ p {
     border: 2px solid rgb(153, 10, 10);
     background-color: rgb(173, 173, 102);
     font-family: 'Press Start 2P', cursive;
+    color: black;
     display: flex;
     flex-direction: column;
     justify-content: space-evenly;

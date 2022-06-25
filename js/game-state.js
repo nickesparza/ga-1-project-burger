@@ -24,54 +24,54 @@ const music = document.getElementById('music')
 const gameStateManager = () => {
     // scope variables
     // declaring image objects for the game art
-        ///////////////////////////////////////////
-        canvas.style.backgroundColor = '#475aa1'
-        let playerImage = new Image()
-        playerImage.src = 'imgs/chef.png'
-        let wallImage = new Image()
-        wallImage.src = 'imgs/kitchen_counter.png'
-        let genImage = new Image()
-        genImage.src = 'imgs/gen_generic.png'
-        let scorImage = new Image()
-        scorImage.src = 'imgs/scorer.png'
-        let trashImage = new Image()
-        trashImage.src = 'imgs/trash_can.png'
-        let ingTomato = new Image()
-        ingTomato.src = 'imgs/ing_tomato.png'
-        let ingCheese = new Image()
-        ingCheese.src = 'imgs/ing_cheese.png'
-        let ingBurg = new Image()
-        ingBurg.src = 'imgs/ing_burgpatty.png'
-        let ingOnion = new Image()
-        ingOnion.src = 'imgs/ing_onion.png'
-        let ingPickles = new Image()
-        ingPickles.src = 'imgs/ing_pickles.png'
-        let ingLettuce = new Image()
-        ingLettuce.src = 'imgs/ing_lettuce.png'
-        let stackTomato = new Image()
-        stackTomato.src = 'imgs/stack_tomato.png'
-        let stackCheese = new Image()
-        stackCheese.src = 'imgs/stack_cheese.png'
-        let stackBurg = new Image()
-        stackBurg.src = 'imgs/stack_burg.png'
-        let stackLettuce = new Image()
-        stackLettuce.src = 'imgs/stack_lettuce.png'
-        let stackOnion = new Image()
-        stackOnion.src = 'imgs/stack_onion.png'
-        let stackPickles = new Image()
-        stackPickles.src = 'imgs/stack_pickles.png'
-        let bunBot = new Image()
-        bunBot.src = 'imgs/bun_bot.png'
-        let bunTop = new Image()
-        bunTop.src = 'imgs/bun_top.png'
-        let uiGameOver = new Image()
-        uiGameOver.src = 'imgs/gameOver.png'
-        let titleScreen = new Image()
-        titleScreen.src = 'imgs/title_screen.png'
-        let resultsScreen = new Image()
-        resultsScreen.src = 'imgs/results_screen.png'
-        //////////////////////////////////////////
-        //////////end of asset list///////////////
+    ///////////////////////////////////////////
+    canvas.style.backgroundColor = '#475aa1'
+    let playerImage = new Image()
+    playerImage.src = 'imgs/chef.png'
+    let wallImage = new Image()
+    wallImage.src = 'imgs/kitchen_counter.png'
+    let genImage = new Image()
+    genImage.src = 'imgs/gen_generic.png'
+    let scorImage = new Image()
+    scorImage.src = 'imgs/scorer.png'
+    let trashImage = new Image()
+    trashImage.src = 'imgs/trash_can.png'
+    let ingTomato = new Image()
+    ingTomato.src = 'imgs/ing_tomato.png'
+    let ingCheese = new Image()
+    ingCheese.src = 'imgs/ing_cheese.png'
+    let ingBurg = new Image()
+    ingBurg.src = 'imgs/ing_burgpatty.png'
+    let ingOnion = new Image()
+    ingOnion.src = 'imgs/ing_onion.png'
+    let ingPickles = new Image()
+    ingPickles.src = 'imgs/ing_pickles.png'
+    let ingLettuce = new Image()
+    ingLettuce.src = 'imgs/ing_lettuce.png'
+    let stackTomato = new Image()
+    stackTomato.src = 'imgs/stack_tomato.png'
+    let stackCheese = new Image()
+    stackCheese.src = 'imgs/stack_cheese.png'
+    let stackBurg = new Image()
+    stackBurg.src = 'imgs/stack_burg.png'
+    let stackLettuce = new Image()
+    stackLettuce.src = 'imgs/stack_lettuce.png'
+    let stackOnion = new Image()
+    stackOnion.src = 'imgs/stack_onion.png'
+    let stackPickles = new Image()
+    stackPickles.src = 'imgs/stack_pickles.png'
+    let bunBot = new Image()
+    bunBot.src = 'imgs/bun_bot.png'
+    let bunTop = new Image()
+    bunTop.src = 'imgs/bun_top.png'
+    let uiGameOver = new Image()
+    uiGameOver.src = 'imgs/gameOver.png'
+    let titleScreen = new Image()
+    titleScreen.src = 'imgs/title_screen.png'
+    let resultsScreen = new Image()
+    resultsScreen.src = 'imgs/results_screen.png'
+    //////////////////////////////////////////
+    //////////end of asset list///////////////
     // score
     let score = 0
     // push score to DOM
@@ -101,7 +101,6 @@ const gameStateManager = () => {
         // set timeout for timer to clear its interval when it hits zero
         setTimeout(() => {
             clearInterval(timerID)
-            // console.log(`time's up`)
             return timer
         }, timer * 1000)
     }
@@ -120,7 +119,7 @@ const gameStateManager = () => {
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // titleManager function that starts interval when game state runs
     const titleManager = () => {
-        console.log(`titleManager running`)
+        // console.log(`titleManager running`)
         music.setAttribute('src', '')
         ctxTarget.clearRect(0, 0, objectiveWindow.width, objectiveWindow.height)
         // setInterval for anonymous title manager that is saved to a variable and starts immediately
@@ -513,5 +512,5 @@ const gameStateManager = () => {
 // event listener to run gameStateManager when DOM loads
 document.addEventListener('DOMContentLoaded', () => {
     gameStateManager()
-    console.log(`gameStateManager running`)
+    // console.log(`gameStateManager running`)
 })
