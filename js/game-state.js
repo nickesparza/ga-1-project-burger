@@ -7,11 +7,11 @@ const ctx = canvas.getContext('2d')
 canvas.setAttribute('width', getComputedStyle(canvas)['width'])
 canvas.setAttribute('height', getComputedStyle(canvas)['height'])
 
-// game canvas element
+// objective canvas element
 const objectiveWindow = document.getElementById('target')
-// game context
+// objective window context
 const ctxTarget = objectiveWindow.getContext('2d')
-// computed styles
+// objective window computed styles
 objectiveWindow.setAttribute('width', getComputedStyle(objectiveWindow)['width'])
 objectiveWindow.setAttribute('height', getComputedStyle(objectiveWindow)['height'])
 
@@ -76,6 +76,12 @@ const gameStateManager = () => {
     let timer = 60
     const timerUI = document.getElementById('timer')
     timerUI.innerHTML = `${timer}`
+    // successful orders
+    let successOrders = 0
+    // failed orders
+    let failedOrders = 0
+    // multiplier
+    let multiplier = 1
     // countdown function that begins when the player hits a key from the titleManager
     // also pushed current time to DOM
     const countDown = (timer) => {
@@ -104,10 +110,6 @@ const gameStateManager = () => {
         successOrders = 0
         failedOrders = 0
     }
-    // successful orders
-    let successOrders = 0
-    // failed orders
-    let failedOrders = 0
 ///////////////////////////////////////////TITLE SCREEN MANAGER//////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // titleManager function that starts interval when game state runs
@@ -244,7 +246,7 @@ const gameStateManager = () => {
                 if (player.scoreable === true) {
                     correctOrIncorrect('#09e030')
                     player.scoreable = false
-                    score += 100
+                    score += (100 * multiplier)
                     successOrders += 1
                     player.ingredients.length = 0
                     scoreUI.innerHTML = `${score}`
@@ -284,10 +286,17 @@ const gameStateManager = () => {
                     // console.log(player.ingredients)
                 }
                 // check for all ingredients and make player scoreable
-                if (player.ingredients.length === ingArray.length && player.scoreable === false) {
-                    player.scoreable = true
-                    // console.log(`player can now score a point`)
-                }
+                objArray.forEach(ingredient => {
+                    if (player.ingredients.includes(ingredient) && player.ingredients.length === objArray.length) {
+                        player.scoreable = true
+                    } else {
+                        player.scoreable = false
+                    }
+                })
+                // if (player.ingredients.length === ingArray.length && player.scoreable === false) {
+                //     player.scoreable = true
+                //     // console.log(`player can now score a point`)
+                // }
             }
             // function to render generator on screen
             render = function () {
@@ -319,6 +328,7 @@ const gameStateManager = () => {
         let scorer = new Scorer(50, 50)
 
         // arrays for checking ingredients and interactables
+        const objArray = []
         const ingArray = [patty, cheese, lettuce, tomato, onion, pickles]
         const interactables = [tomato, cheese, lettuce, onion, patty, pickles, scorer]
 
@@ -354,11 +364,29 @@ const gameStateManager = () => {
         }
 
         // function for rendering the objective burger in the objective window
-        const drawObjective = () => {
+        const setObjective = () => {
             ctxTarget.clearRect(0, 0, objectiveWindow.width, objectiveWindow.height)
             let stackPosition = 200
-            // iterates over elements in the ingredients array to avoid including things that aren't ingredients
+            // clear current objective array
+            objArray.length = 0
+            // always include a patty
+            // objArray.push(patty)
+            // for each possible ingredient, give a 50% chance of it being included in the objective
             ingArray.forEach(ingredient => {
+                if (ingredient === patty && Math.random() > 0.3) {
+                    objArray.push(ingredient)
+                } else if (Math.random() > 0.5) {
+                    objArray.push(ingredient)
+                }
+            })
+            if (objArray.length === 0) {
+                ingArray.forEach(ingredient => {
+                    objArray.push(ingredient)
+                })
+            }
+            multiplier = objArray.length
+            // iterates over elements in the ingredients array to avoid including things that aren't ingredients
+            objArray.forEach(ingredient => {
                 // ctxTarget.fillStyle = ingredient.color
                 ctxTarget.drawImage(ingredient.stackRef, 30, stackPosition, 120, 20)
                 stackPosition -= 25
@@ -368,7 +396,7 @@ const gameStateManager = () => {
         }
 
         // since the objective doesn't currently change, can call it once when playManager begins and then leave it
-        drawObjective()
+        setObjective()
 
         // function to flash the objective window for correct or incorrect combinations
         const correctOrIncorrect = (color) => {
@@ -376,7 +404,7 @@ const gameStateManager = () => {
             window.style.backgroundColor = color
             ctxTarget.fillStyle = color
             ctxTarget.fillRect(0, 0, 180, 280)
-            setTimeout(drawObjective, 500)
+            setTimeout(setObjective, 500)
             setTimeout(() => { window.style.backgroundColor = 'black' }, 500)
         }
 /////////////////////////////////////////GAME LOOP BELOW/////////////////////////////////////////////////////////////
