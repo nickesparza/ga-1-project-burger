@@ -31,6 +31,8 @@ const gameStateManager = () => {
         genImage.src = 'imgs/gen_generic.png'
         let scorImage = new Image()
         scorImage.src = 'imgs/scorer.png'
+        let trashImage = new Image()
+        trashImage.src = 'imgs/trash_can.png'
         let ingTomato = new Image()
         ingTomato.src = 'imgs/ing_tomato.png'
         let ingCheese = new Image()
@@ -73,7 +75,7 @@ const gameStateManager = () => {
     const scoreUI = document.getElementById('score')
     scoreUI.innerHTML = `${score}`
     // timer
-    let timer = 60
+    let timer = 90
     const timerUI = document.getElementById('timer')
     timerUI.innerHTML = `${timer}`
     // successful orders
@@ -102,7 +104,8 @@ const gameStateManager = () => {
     }
     // function to reset the timer and score when the player returns from the resultsManager to titleManager
     const resetUI = () => {
-        timer = 60
+        ctxTarget.clearRect(0, 0, objectiveWindow.width, objectiveWindow.height)
+        timer = 90
         timerUI.style.color = 'white'
         timerUI.innerHTML = `${timer}`
         score = 0
@@ -301,10 +304,25 @@ const gameStateManager = () => {
             // function to render generator on screen
             render = function () {
                 ctx.drawImage(genImage, this.x, this.y)
-                ctx.fillStyle = this.color
                 ctx.drawImage(this.image, this.x, this.y)
             }
         }
+
+        class Trash {
+            constructor(x, y) {
+                this.x = x,
+                this.y = y,
+                this.image = trashImage
+            }
+            // function for garbage object to delete 
+            deleteStack = function () {
+                player.ingredients.length = 0
+            }
+            render = function () {
+                ctx.drawImage(this.image, this.x, this.y)
+            }
+        }
+
         // checker function for giving player an ingredient
         const collisionChecker = (interactable) => {
             if (player.x === interactable.x && player.y === interactable.y) {
@@ -312,13 +330,15 @@ const gameStateManager = () => {
                     interactable.giveIngredient()
                 } else if (interactable instanceof Scorer) {
                     interactable.checkIngredients()
+                } else if (interactable instanceof Trash) {
+                    interactable.deleteStack()
                 }
             }
         }
         // instantiate a player object
         let player = new Player(150, 100)
 
-        // instantiate generator objects
+        // instantiate interactable objects
         let tomato = new Generator(400, 300, 'tomato', stackTomato, ingTomato, 'red')
         let cheese = new Generator(250, 200, 'cheese', stackCheese, ingCheese, 'yellow')
         let lettuce = new Generator(50, 450, 'lettuce', stackLettuce, ingLettuce, '#5eff00')
@@ -326,11 +346,12 @@ const gameStateManager = () => {
         let patty = new Generator(500, 500, 'patty', stackBurg, ingBurg, 'brown')
         let pickles = new Generator(650, 50, 'pickles', stackPickles, ingPickles, 'green')
         let scorer = new Scorer(50, 50)
+        let trashCan = new Trash(250, 450)
 
         // arrays for checking ingredients and interactables
         const objArray = []
         const ingArray = [patty, cheese, lettuce, tomato, onion, pickles]
-        const interactables = [tomato, cheese, lettuce, onion, patty, pickles, scorer]
+        const interactables = [tomato, cheese, lettuce, onion, patty, pickles, scorer, trashCan]
 
         // two-dimensional array to determine where to draw walls
         const mapArray = [
@@ -371,7 +392,7 @@ const gameStateManager = () => {
             objArray.length = 0
             // always include a patty
             // objArray.push(patty)
-            // for each possible ingredient, give a 50% chance of it being included in the objective
+            // for each possible ingredient, give a 50% chance of it being included in the objective. Weight the burger more heavily
             ingArray.forEach(ingredient => {
                 if (ingredient === patty && Math.random() > 0.3) {
                     objArray.push(ingredient)
