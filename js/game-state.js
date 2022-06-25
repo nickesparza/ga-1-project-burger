@@ -129,17 +129,21 @@ const gameStateManager = () => {
             ctx.drawImage(titleScreen, 0, 0)
         }, 60)
         // includes listener for keypress that ends interval using return from titleID and starts playManager
-        document.addEventListener('keydown', function () {
-            clearInterval(titleID)
-            console.log(`titleManager interval cleared`)
-            playManager()
-        }, {once: true})
+        document.addEventListener('keydown', function (e) {
+            if (e.key == 'w') {
+                clearInterval(titleID)
+                // console.log(`titleManager interval cleared`)
+                playManager()
+                this.removeEventListener('keydown', arguments.callee)
+            }
+            
+        })
     }
 ///////////////////////////////////////////////GAMEPLAY MANAGER//////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // playManager function that runs when triggered from titleManager event listener
     const playManager = () => {
-        console.log(`playManager running`)
+        // console.log(`playManager running`)
         // define player class
         class Player {
             constructor(x, y) {
@@ -473,7 +477,7 @@ const gameStateManager = () => {
         countDown(timer)
         setTimeout(() => {
             clearInterval(playID)
-            console.log(`playManager interval cleared`)
+            // console.log(`playManager interval cleared`)
             ctx.fillStyle = 'white'
             ctx.drawImage(uiGameOver, 150, 100)
             setTimeout(resultsManager, 2000)
@@ -497,12 +501,15 @@ const gameStateManager = () => {
             ctx.fillText(`${score}`, 410, 500)
         }, 60)
         // includes event listener for keypress that ends interval using return from resultsID and starts titleManager again
-        document.addEventListener('keydown', function () {
-            clearInterval(resultsID)
-            console.log(`resultsManager interval cleared`)
-            resetUI()
-            titleManager()
-        }, {once: true})
+        document.addEventListener('keydown', function (e) {
+            if (e.key == 'w') {
+                clearInterval(resultsID)
+                // console.log(`resultsManager interval cleared`)
+                resetUI()
+                titleManager()
+                this.removeEventListener('keydown', arguments.callee)
+            }
+        })
     }
     // call titleManager to begin loop
     titleManager()
