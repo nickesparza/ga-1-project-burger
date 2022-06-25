@@ -179,6 +179,8 @@ const gameStateManager = () => {
                 // draw top bun that stays on top of burger stack
                 ctx.drawImage(bunTop, this.x + 12, this.y + stackPosition - 5, 25, 10)
             }
+            
+            // player render function
             render = function () {
                 ctx.drawImage(playerImage, this.x, this.y, this.width, this.height)
             }
@@ -199,6 +201,10 @@ const gameStateManager = () => {
                 if (key.toLowerCase() == 'd') { this.direction.right = false }
             }
             movePlayer = function () {
+                // function for checking player movement against the 2D map
+                const getTile = (x, y) => {
+                    return(mapArray[Math.floor(y / 50)][Math.floor(x / 50)]);
+                }
                 // move player looks at the direction and sends the object in the true direction
                 if (this.direction.up) {
                     // if the coordinates specified by getTile correspond to an array index with a 1 (meaning a solid block), do nothing, otherwise let the player move
@@ -256,7 +262,8 @@ const gameStateManager = () => {
                     // console.log(`Players ingredient list is now ${player.ingredients}`)
                     // console.log(`You scored a point`)
                 // if they don't, delete ingredients and flash red objective
-                } else if (player.ingredients.length > 0 && player.ingredients.length < ingArray.length) {
+                // if they have no ingredients, do nothing, otherwise flash red
+                } else if (player.ingredients.length > 0) {
                     correctOrIncorrect('red')
                     player.ingredients.length = 0
                     failedOrders += 1
@@ -290,16 +297,16 @@ const gameStateManager = () => {
                 }
                 // check for all ingredients and make player scoreable
                 objArray.forEach(ingredient => {
-                    if (player.ingredients.includes(ingredient) && player.ingredients.length === objArray.length) {
+                    // player becomes scoreable if and only if their ingredients array is the same length as the objective
+                    // AND their array includes everything in the objective array
+                    if (player.ingredients.length === objArray.length && player.ingredients.includes(ingredient)) {
                         player.scoreable = true
+                        console.log(`player can score a point`)
                     } else {
                         player.scoreable = false
+                        console.log(`player cannot currently score`)
                     }
                 })
-                // if (player.ingredients.length === ingArray.length && player.scoreable === false) {
-                //     player.scoreable = true
-                //     // console.log(`player can now score a point`)
-                // }
             }
             // function to render generator on screen
             render = function () {
@@ -307,7 +314,7 @@ const gameStateManager = () => {
                 ctx.drawImage(this.image, this.x, this.y)
             }
         }
-
+        // trash can class to delete ingredients
         class Trash {
             constructor(x, y) {
                 this.x = x,
@@ -316,7 +323,9 @@ const gameStateManager = () => {
             }
             // function for garbage object to delete 
             deleteStack = function () {
-                player.ingredients.length = 0
+                if (player.ingredients.length > 0) {
+                    player.ingredients.length = 0
+                }
             }
             render = function () {
                 ctx.drawImage(this.image, this.x, this.y)
@@ -346,12 +355,13 @@ const gameStateManager = () => {
         let patty = new Generator(500, 500, 'patty', stackBurg, ingBurg, 'brown')
         let pickles = new Generator(650, 50, 'pickles', stackPickles, ingPickles, 'green')
         let scorer = new Scorer(50, 50)
-        let trashCan = new Trash(250, 450)
+        let leftTrash = new Trash(250, 450)
+        let rightTrash = new Trash(700, 100)
 
         // arrays for checking ingredients and interactables
         const objArray = []
         const ingArray = [patty, cheese, lettuce, tomato, onion, pickles]
-        const interactables = [tomato, cheese, lettuce, onion, patty, pickles, scorer, trashCan]
+        const interactables = [tomato, cheese, lettuce, onion, patty, pickles, scorer, leftTrash, rightTrash]
 
         // two-dimensional array to determine where to draw walls
         const mapArray = [
@@ -378,10 +388,6 @@ const gameStateManager = () => {
                     }
                 }
             }
-        }
-        // function for checking player movement against the 2D map
-        function getTile(x, y) {
-            return(mapArray[Math.floor(y / 50)][Math.floor(x / 50)]);
         }
 
         // function for rendering the objective burger in the objective window
@@ -416,7 +422,7 @@ const gameStateManager = () => {
             ctxTarget.drawImage(bunTop, 30, stackPosition)
         }
 
-        // since the objective doesn't currently change, can call it once when playManager begins and then leave it
+        // set objective on game start
         setObjective()
 
         // function to flash the objective window for correct or incorrect combinations
