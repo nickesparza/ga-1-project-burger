@@ -15,6 +15,9 @@ const ctxTarget = objectiveWindow.getContext('2d')
 objectiveWindow.setAttribute('width', getComputedStyle(objectiveWindow)['width'])
 objectiveWindow.setAttribute('height', getComputedStyle(objectiveWindow)['height'])
 
+// audio element
+const music = document.getElementById('music')
+
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // gameStateManager that runs when DOM loads that loads titleManager first
@@ -118,10 +121,11 @@ const gameStateManager = () => {
     // titleManager function that starts interval when game state runs
     const titleManager = () => {
         console.log(`titleManager running`)
+        music.setAttribute('src', '')
         ctxTarget.clearRect(0, 0, objectiveWindow.width, objectiveWindow.height)
         // setInterval for anonymous title manager that is saved to a variable and starts immediately
         const titleID = setInterval(() => {
-            // render functions for title screen, animated elements?
+            // render functions for title screen
             ctx.clearRect(0, 0, canvas.width, canvas.height)
             ctx.drawImage(titleScreen, 0, 0)
         }, 60)
@@ -259,8 +263,6 @@ const gameStateManager = () => {
                     successOrders += 1
                     player.ingredients.length = 0
                     scoreUI.innerHTML = `${score}`
-                    // console.log(`Players ingredient list is now ${player.ingredients}`)
-                    // console.log(`You scored a point`)
                 // if they don't, delete ingredients and flash red objective
                 // if they have no ingredients, do nothing, otherwise flash red
                 } else if (player.ingredients.length > 0) {
@@ -293,7 +295,6 @@ const gameStateManager = () => {
                 if (!player.ingredients.includes(this)) {
                     player.ingredients.push(this)
                     // console.log(`Player has obtained ${this.ingredient}`)
-                    // console.log(player.ingredients)
                 }
                 // check for all ingredients and make player scoreable
                 objArray.forEach(ingredient => {
@@ -301,10 +302,8 @@ const gameStateManager = () => {
                     // AND their array includes everything in the objective array
                     if (player.ingredients.length === objArray.length && player.ingredients.includes(ingredient)) {
                         player.scoreable = true
-                        console.log(`player can score a point`)
                     } else {
                         player.scoreable = false
-                        console.log(`player cannot currently score`)
                     }
                 })
             }
@@ -318,17 +317,16 @@ const gameStateManager = () => {
         class Trash {
             constructor(x, y) {
                 this.x = x,
-                this.y = y,
-                this.image = trashImage
+                this.y = y
             }
-            // function for garbage object to delete 
+            // function for garbage object to delete player's current ingredients
             deleteStack = function () {
                 if (player.ingredients.length > 0) {
                     player.ingredients.length = 0
                 }
             }
             render = function () {
-                ctx.drawImage(this.image, this.x, this.y)
+                ctx.drawImage(trashImage, this.x, this.y)
             }
         }
 
@@ -348,13 +346,16 @@ const gameStateManager = () => {
         let player = new Player(150, 100)
 
         // instantiate interactable objects
+        // ingredients
         let tomato = new Generator(400, 300, 'tomato', stackTomato, ingTomato, 'red')
         let cheese = new Generator(250, 200, 'cheese', stackCheese, ingCheese, 'yellow')
         let lettuce = new Generator(50, 450, 'lettuce', stackLettuce, ingLettuce, '#5eff00')
         let onion = new Generator(700, 300, 'onion', stackOnion, ingOnion, 'white')
         let patty = new Generator(500, 500, 'patty', stackBurg, ingBurg, 'brown')
         let pickles = new Generator(650, 50, 'pickles', stackPickles, ingPickles, 'green')
+        // scorer
         let scorer = new Scorer(50, 50)
+        // two trash cans
         let leftTrash = new Trash(250, 450)
         let rightTrash = new Trash(700, 100)
 
@@ -396,8 +397,6 @@ const gameStateManager = () => {
             let stackPosition = 200
             // clear current objective array
             objArray.length = 0
-            // always include a patty
-            // objArray.push(patty)
             // for each possible ingredient, give a 50% chance of it being included in the objective. Weight the burger more heavily
             ingArray.forEach(ingredient => {
                 if (ingredient === patty && Math.random() > 0.3) {
@@ -414,7 +413,6 @@ const gameStateManager = () => {
             multiplier = objArray.length
             // iterates over elements in the ingredients array to avoid including things that aren't ingredients
             objArray.forEach(ingredient => {
-                // ctxTarget.fillStyle = ingredient.color
                 ctxTarget.drawImage(ingredient.stackRef, 30, stackPosition, 120, 20)
                 stackPosition -= 25
             })
@@ -468,6 +466,10 @@ const gameStateManager = () => {
                 player.unSetDirection(e.key)
             }
         })
+
+        // set music
+        music.setAttribute('src', 'audio/S31-Winning-the-Race.ogg')
+        music.volume = 0.5
         // includes function to clear interval when timer hits zero and start resultsManager
         countDown(timer)
         setTimeout(() => {
@@ -482,7 +484,7 @@ const gameStateManager = () => {
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // resultsManager function that runs when triggered from timer function inside of playManager
     const resultsManager = () => {
-        console.log(`resultsManager running`)
+        // console.log(`resultsManager running`)
         // setInterval for anonymous results manager function that is saved to a variable and starts immediately
         const resultsID = setInterval(() => {
             // renders score screen, successes, and failures
@@ -490,8 +492,6 @@ const gameStateManager = () => {
             // text style for context
             ctx.font = '54px Helvetica'
             ctx.fillStyle = 'white'
-            // ctx.fillText('Round Over', 175, 180)
-            // ctx.fillText(`Press any key to return to title`, 175, 500)
             ctx.drawImage(resultsScreen, 0, 0)
             ctx.fillText(`${successOrders}`, 410, 375)
             ctx.fillText(`${failedOrders}`, 410, 430)
