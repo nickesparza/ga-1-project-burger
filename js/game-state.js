@@ -74,11 +74,13 @@ const gameStateManager = () => {
     //////////end of asset list///////////////
     // score
     let score = 0
+    localStorage.setItem('hiscore', '0')
+    let hiscore = localStorage.getItem('hiscore')
     // push score to DOM
     const scoreUI = document.getElementById('score')
     scoreUI.innerHTML = `${score}`
     // timer
-    let timer = 90
+    let timer = 30
     const timerUI = document.getElementById('timer')
     timerUI.innerHTML = `${timer}`
     // successful orders
@@ -87,34 +89,7 @@ const gameStateManager = () => {
     let failedOrders = 0
     // multiplier
     let multiplier = 1
-    // countdown function that begins when the player hits a key from the titleManager
-    // also pushed current time to DOM
-    const countDown = (timer) => {
-        timerUI.innerHTML = `${timer}`
-        const timerID = setInterval(() => {
-            timer -= 1
-            timerUI.innerHTML = `${timer}`
-            if (timer <= 10) {
-                timerUI.style.color = 'red'
-            }
-        }, 1000)
-        // set timeout for timer to clear its interval when it hits zero
-        setTimeout(() => {
-            clearInterval(timerID)
-            return timer
-        }, timer * 1000)
-    }
-    // function to reset the timer and score when the player returns from the resultsManager to titleManager
-    const resetUI = () => {
-        ctxTarget.clearRect(0, 0, objectiveWindow.width, objectiveWindow.height)
-        timer = 90
-        timerUI.style.color = 'white'
-        timerUI.innerHTML = `${timer}`
-        score = 0
-        scoreUI.innerHTML = `${score}`
-        successOrders = 0
-        failedOrders = 0
-    }
+
 ///////////////////////////////////////////TITLE SCREEN MANAGER//////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // titleManager function that starts interval when game state runs
@@ -270,8 +245,10 @@ const gameStateManager = () => {
                 // if they have no ingredients, do nothing, otherwise flash red
                 } else if (player.ingredients.length > 0) {
                     correctOrIncorrect('red')
-                    player.ingredients.length = 0
+                    score -= (100 * multiplier)
                     failedOrders += 1
+                    player.ingredients.length = 0
+                    scoreUI.innerHTML = `${score}`
                     // console.log(`You screwed up! Not all ingredients were added`)
                 }
             }
@@ -435,6 +412,28 @@ const gameStateManager = () => {
             setTimeout(setObjective, 500)
             setTimeout(() => { window.style.backgroundColor = 'black' }, 500)
         }
+        // function to set timer and clear playManager interval when it hits 0
+        const countDown = (timer) => {
+            timerUI.innerHTML = `${timer}`
+            const timerID = setInterval(() => {
+                timer -= 1
+                timerUI.innerHTML = `${timer}`
+                if (timer <= 10) {
+                    timerUI.style.color = 'red'
+                }
+                if (timer === 0) {
+                    clearInterval(playID)
+                    // console.log(`playManager interval cleared`)
+                    ctx.drawImage(uiGameOver, 150, 100)
+                    setTimeout(resultsManager, 2000)
+                }
+            }, 1000)
+            // set timeout for timer to clear its interval when it hits zero
+            setTimeout(() => {
+                clearInterval(timerID)
+                return timer
+            }, timer * 1000)
+        }
 /////////////////////////////////////////GAME LOOP BELOW/////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // setInterval for anonymous play manager function that is saved to a variable and starts immediately
@@ -473,32 +472,41 @@ const gameStateManager = () => {
         // set music
         music.setAttribute('src', 'audio/S31-Winning-the-Race.ogg')
         music.volume = 0.5
-        // includes function to clear interval when timer hits zero and start resultsManager
+        // call countDown function to begin timer
         countDown(timer)
-        setTimeout(() => {
-            clearInterval(playID)
-            // console.log(`playManager interval cleared`)
-            ctx.fillStyle = 'white'
-            ctx.drawImage(uiGameOver, 150, 100)
-            setTimeout(resultsManager, 2000)
-        }, timer * 1000)
     }
 ///////////////////////////////////////////////RESULTS SCREEN MANAGER////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // resultsManager function that runs when triggered from timer function inside of playManager
     const resultsManager = () => {
         // console.log(`resultsManager running`)
+        if (score > parseInt(hiscore)) {
+            localStorage.setItem('hiscore', score)
+        }
+        // function to reset the timer and score when the player returns from the resultsManager to titleManager
+        const resetUI = () => {
+            ctxTarget.clearRect(0, 0, objectiveWindow.width, objectiveWindow.height)
+            timer = 30
+            timerUI.style.color = 'white'
+            timerUI.innerHTML = `${timer}`
+            score = 0
+            scoreUI.innerHTML = `${score}`
+            successOrders = 0
+            failedOrders = 0
+        }
         // setInterval for anonymous results manager function that is saved to a variable and starts immediately
         const resultsID = setInterval(() => {
             // renders score screen, successes, and failures
             ctx.clearRect(0, 0, canvas.width, canvas.height)
             // text style for context
-            ctx.font = '54px Helvetica'
+            ctx.font = '48px PressStart2P'
             ctx.fillStyle = 'white'
             ctx.drawImage(resultsScreen, 0, 0)
             ctx.fillText(`${successOrders}`, 410, 375)
-            ctx.fillText(`${failedOrders}`, 410, 430)
-            ctx.fillText(`${score}`, 410, 500)
+            ctx.fillText(`${failedOrders}`, 410, 440)
+            ctx.fillText(`${score}`, 410, 510)
+            ctx.font = '18px PressStart2P'
+            ctx.fillText(`Current High Score: ${localStorage.getItem('hiscore')}`, 50, 550)
         }, 60)
         // includes event listener for keypress that ends interval using return from resultsID and starts titleManager again
         document.addEventListener('keydown', function (e) {
