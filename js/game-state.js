@@ -80,7 +80,7 @@ const gameStateManager = () => {
     const scoreUI = document.getElementById('score')
     scoreUI.innerHTML = `${score}`
     // timer
-    let timer = 30
+    let timer = 90
     const timerUI = document.getElementById('timer')
     timerUI.innerHTML = `${timer}`
     // successful orders
@@ -471,7 +471,7 @@ const gameStateManager = () => {
 
         // set music
         music.setAttribute('src', 'audio/S31-Winning-the-Race.ogg')
-        music.volume = 0.5
+        music.volume = 0.3
         // call countDown function to begin timer
         countDown(timer)
     }
@@ -486,7 +486,7 @@ const gameStateManager = () => {
         // function to reset the timer and score when the player returns from the resultsManager to titleManager
         const resetUI = () => {
             ctxTarget.clearRect(0, 0, objectiveWindow.width, objectiveWindow.height)
-            timer = 30
+            timer = 90
             timerUI.style.color = 'white'
             timerUI.innerHTML = `${timer}`
             score = 0
@@ -505,8 +505,8 @@ const gameStateManager = () => {
             ctx.fillText(`${successOrders}`, 410, 375)
             ctx.fillText(`${failedOrders}`, 410, 440)
             ctx.fillText(`${score}`, 410, 510)
-            ctx.font = '18px PressStart2P'
-            ctx.fillText(`Current High Score: ${localStorage.getItem('hiscore')}`, 50, 550)
+            ctx.font = '24px PressStart2P'
+            ctx.fillText(`${localStorage.getItem('hiscore')}`, 650, 375)
         }, 60)
         // includes event listener for keypress that ends interval using return from resultsID and starts titleManager again
         document.addEventListener('keydown', function (e) {
