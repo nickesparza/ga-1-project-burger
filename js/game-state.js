@@ -74,9 +74,6 @@ const gameStateManager = () => {
     //////////end of asset list///////////////
     // score
     let score = 0
-    window.localStorage.setItem('hiscore', '0')
-    let hiscore = window.localStorage.getItem('hiscore')
-    console.log(hiscore)
     // push score to DOM
     const scoreUI = document.getElementById('score')
     scoreUI.innerHTML = `${score}`
@@ -481,9 +478,6 @@ const gameStateManager = () => {
     // resultsManager function that runs when triggered from timer function inside of playManager
     const resultsManager = () => {
         // console.log(`resultsManager running`)
-        if (score > parseInt(hiscore)) {
-            window.localStorage.setItem('hiscore', score)
-        }
         // function to reset the timer and score when the player returns from the resultsManager to titleManager
         const resetUI = () => {
             ctxTarget.clearRect(0, 0, objectiveWindow.width, objectiveWindow.height)
@@ -506,8 +500,6 @@ const gameStateManager = () => {
             ctx.fillText(`${successOrders}`, 410, 375)
             ctx.fillText(`${failedOrders}`, 410, 440)
             ctx.fillText(`${score}`, 410, 510)
-            ctx.font = '24px PressStart2P'
-            ctx.fillText(`${localStorage.getItem('hiscore')}`, 650, 375)
         }, 60)
         // includes event listener for keypress that ends interval using return from resultsID and starts titleManager again
         document.addEventListener('keydown', function (e) {
