@@ -74,8 +74,9 @@ const gameStateManager = () => {
     //////////end of asset list///////////////
     // score
     let score = 0
-    localStorage.setItem('hiscore', '0')
-    let hiscore = localStorage.getItem('hiscore')
+    window.localStorage.setItem('hiscore', '0')
+    let hiscore = window.localStorage.getItem('hiscore')
+    console.log(hiscore)
     // push score to DOM
     const scoreUI = document.getElementById('score')
     scoreUI.innerHTML = `${score}`
@@ -481,7 +482,7 @@ const gameStateManager = () => {
     const resultsManager = () => {
         // console.log(`resultsManager running`)
         if (score > parseInt(hiscore)) {
-            localStorage.setItem('hiscore', score)
+            window.localStorage.setItem('hiscore', score)
         }
         // function to reset the timer and score when the player returns from the resultsManager to titleManager
         const resetUI = () => {
